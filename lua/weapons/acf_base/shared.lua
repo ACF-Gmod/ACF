@@ -117,7 +117,7 @@ function SWEP:CalculateModifiers()
 
 	local modifier = 1
 
-	if self.Owner:KeyDown(IN_FORWARD | IN_BACK | IN_MOVELEFT | IN_MOVERIGHT) then
+	if self.Owner:KeyDown(IN_FORWARD or IN_BACK or IN_MOVELEFT or IN_MOVERIGHT) then
 		modifier = modifier*2
 	end
 	
