@@ -180,7 +180,7 @@ function EFFECT:Render()
 	local Bullet = ACF.BulletEffect[self.Index]
 	
 	if (Bullet) then
-		self.Entity:SetModelScale( Vector(Bullet.Caliber/10,Bullet.Caliber/10,Bullet.Caliber/10) )
+		self.Entity:SetModelScale( Bullet.Caliber/10 , 0 )
 		self.Entity:DrawModel()       // Draw the model. 
 	end
 	

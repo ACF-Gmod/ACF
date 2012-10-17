@@ -439,7 +439,7 @@ function ENT:MuzzleEffect()
 		Effect:SetEntity( self.Entity )
 		Effect:SetScale( self.BulletData["PropMass"] )
 		Effect:SetMagnitude( self.ReloadTime )
-		Effect:SetSurfaceProp( ACF.RoundTypes[self.BulletData["Type"]]["id"]  )	--Encoding the ammo type into a table index
+		Effect:SetSurfaceProp( ACF.RoundTypes[self.BulletData["Type"]]["netid"]  )	--Encoding the ammo type into a table index
 	util.Effect( "ACF_MuzzleFlash", Effect, true, true )
 
 end
@@ -450,7 +450,7 @@ function ENT:ReloadEffect()
 		Effect:SetEntity( self.Entity )
 		Effect:SetScale( 0 )
 		Effect:SetMagnitude( self.ReloadTime )
-		Effect:SetSurfaceProp( ACF.RoundTypes[self.BulletData["Type"]]["id"]  )	--Encoding the ammo type into a table index
+		Effect:SetSurfaceProp( ACF.RoundTypes[self.BulletData["Type"]]["netid"]  )	--Encoding the ammo type into a table index
 	util.Effect( "ACF_MuzzleFlash", Effect, true, true )
 	
 end

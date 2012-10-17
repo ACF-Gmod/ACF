@@ -308,8 +308,8 @@ function ENT:CalcRPM( EngPhys )
 	Wire_TriggerOutput(self.Entity, "Torque", math.floor(self.Torque))
 	Wire_TriggerOutput(self.Entity, "Power", math.floor(Power))
 	Wire_TriggerOutput(self.Entity, "RPM", self.FlyRPM)
-	self.Sound:ChangePitch(math.min(20 + SmoothRPM/50,255))
-	self.Sound:ChangeVolume(0.25 + self.Throttle/1.5)
+	self.Sound:ChangePitch(math.min(20 + SmoothRPM/50,255),0)
+	self.Sound:ChangeVolume(0.25 + self.Throttle/1.5,0)
 
 	return RPM
 
