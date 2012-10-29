@@ -43,7 +43,7 @@ function EFFECT:Init( data )
 	else
 		--print("Creating Bullet Effect")
 		local BulletData = {}
-		BulletData.Crate = Entity(data:GetMagnitude())
+		BulletData.Crate = Entity(math.Round(data:GetMagnitude()))
 		BulletData.SimFlight = data:GetStart()*10
 		BulletData.SimPos = data:GetOrigin()
 		BulletData.Caliber = BulletData.Crate:GetNetworkedInt( "Caliber" ) or 10

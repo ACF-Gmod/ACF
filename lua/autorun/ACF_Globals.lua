@@ -82,14 +82,16 @@ ACF.RoundTypes = list.Get("ACFRoundTypes")
 
 ACF.IdRounds = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
 
-game.AddParticles("particles/acf_muzzleflashes.pcf")
-game.AddParticles("particles/explosion1.pcf")
-game.AddParticles("particles/rocket_motor.pcf")
+timer.Simple(5,function()
+	game.AddParticles("particles/acf_muzzleflashes.pcf")
+	game.AddParticles("particles/explosion1.pcf")
+	game.AddParticles("particles/rocket_motor.pcf")
 
-PrecacheParticleSystem("tracer_tail_white")
-for Class,Table in pairs(ACF.Classes["GunClass"]) do
-	PrecacheParticleSystem(Table["muzzleflash"])
-end
+
+	for Class,Table in pairs(ACF.Classes["GunClass"]) do
+		PrecacheParticleSystem(Table["muzzleflash"])
+	end
+end)
 
 function ACF_MuzzleVelocity( Propellant, Mass, Caliber )
 
