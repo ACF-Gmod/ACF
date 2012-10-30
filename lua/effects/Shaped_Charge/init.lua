@@ -22,7 +22,7 @@
 			particle:SetStartSize( 5 )
 			particle:SetEndSize( 15 )
 			particle:SetAirResistance( 350 )
-			particle:SetColor(Color( 255 , 255 , 255 ))
+			particle:SetColor(255 , 255 , 255 )
 		end
 	end
 		
@@ -41,7 +41,7 @@
 			Debris:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Debris:SetAirResistance( 100 ) 			 
 			Debris:SetGravity( Vector( 0, 0, -650 ) ) 			
-			Debris:SetColor( Color(100,80,90 ))
+			Debris:SetColor( 100,80,90 )
 		end
 	end
 	
@@ -60,7 +60,7 @@
 			Embers:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Embers:SetAirResistance( 100 ) 			 
 			Embers:SetGravity( Vector( 0, 0, -650 ) ) 			
-			Embers:SetColor( Color(100,80,90 ))
+			Embers:SetColor( 100,80,90 )
 		end
 	end
 
@@ -79,7 +79,7 @@
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Smoke:SetAirResistance( 50 ) 			 
 			Smoke:SetGravity( Vector( 0, 0, 100 ) ) 			
-			Smoke:SetColor( Color(100,80,90 ))
+			Smoke:SetColor( 100,80,90 )
 		end
 	end
 

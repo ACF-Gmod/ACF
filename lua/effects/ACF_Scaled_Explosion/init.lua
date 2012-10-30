@@ -85,7 +85,7 @@ function EFFECT:Core()
 			Flame:SetRollDelta( math.Rand(-1, 1) )			
 			Flame:SetAirResistance( 300 ) 			 
 			Flame:SetGravity( Vector( 0, 0, 4 ) ) 			
-			Flame:SetColor( Color(255,255,255 ))
+			Flame:SetColor( 255,255,255 )
 		end
 		
 	end
@@ -105,7 +105,7 @@ function EFFECT:Core()
 			Debris:SetRollDelta( math.Rand(-3, 3) )			
 			Debris:SetAirResistance( 10 ) 			 
 			Debris:SetGravity( Vector( 0, 0, -650 ) ) 			
-			Debris:SetColor( Color(120,120,120 ))
+			Debris:SetColor( 120,120,120 )
 		end
 	end
 	
@@ -126,7 +126,7 @@ function EFFECT:Core()
 			Embers:SetRollDelta( math.Rand(-0.2, 0.2) )	
 			Embers:SetAirResistance( 20 ) 			 
 			Embers:SetGravity( Vector( 0, 0, -650 ) ) 			
-			Embers:SetColor( Color(200,200,200 ))
+			Embers:SetColor( 200,200,200 )
 		end
 	end
 	
@@ -144,7 +144,7 @@ function EFFECT:Core()
 				Whisp:SetRollDelta( math.Rand(-0.2, 0.2) )			
 				Whisp:SetAirResistance( 100 ) 			 
 				Whisp:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, 0 ) ) 			
-				Whisp:SetColor( Color(150,150,150 ))
+				Whisp:SetColor( 150,150,150 )
 			end
 	end
 	
@@ -184,7 +184,7 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Smoke:SetAirResistance( 200 ) 			 
 			Smoke:SetGravity( Vector( math.Rand( -20 , 20 ), math.Rand( -20 , 20 ), math.Rand( 10 , 100 ) ) )			
-			Smoke:SetColor( Color(SmokeColor.x,SmokeColor.y,SmokeColor.z ))
+			Smoke:SetColor( SmokeColor.x,SmokeColor.y,SmokeColor.z )
 		end	
 	
 	end
@@ -210,7 +210,7 @@ function EFFECT:Metal( SmokeColor )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Smoke:SetAirResistance( 100 ) 			 
 			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -50 ) ) 			
-			Smoke:SetColor( Color(SmokeColor.x,SmokeColor.y,SmokeColor.z ))
+			Smoke:SetColor( SmokeColor.x,SmokeColor.y,SmokeColor.z )
 		end
 	
 	end
@@ -236,7 +236,7 @@ function EFFECT:Concrete( SmokeColor )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Smoke:SetAirResistance( 100 ) 			 
 			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -50 ) ) 			
-			Smoke:SetColor(  Color(SmokeColor.x,SmokeColor.y,SmokeColor.z  ))
+			Smoke:SetColor(  SmokeColor.x,SmokeColor.y,SmokeColor.z  )
 		end
 	
 	end
@@ -262,7 +262,7 @@ function EFFECT:Dirt( SmokeColor )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Smoke:SetAirResistance( 100 ) 			 
 			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -50 ) ) 			
-			Smoke:SetColor(  Color(SmokeColor.x,SmokeColor.y,SmokeColor.z  ))
+			Smoke:SetColor(  SmokeColor.x,SmokeColor.y,SmokeColor.z  )
 		end
 	
 	end
@@ -288,7 +288,7 @@ function EFFECT:Sand( SmokeColor )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Smoke:SetAirResistance( 100 ) 			 
 			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -50 ) ) 			
-			Smoke:SetColor(  Color(SmokeColor.x,SmokeColor.y,SmokeColor.z  ))
+			Smoke:SetColor(  SmokeColor.x,SmokeColor.y,SmokeColor.z  )
 		end
 	
 	end
@@ -314,7 +314,7 @@ function EFFECT:Airburst( SmokeColor )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Smoke:SetAirResistance( 100 ) 			 
 			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -50 ) ) 			
-			Smoke:SetColor( Color( SmokeColor.x,SmokeColor.y,SmokeColor.z  ))
+			Smoke:SetColor( SmokeColor.x,SmokeColor.y,SmokeColor.z  )
 		end
 	
 	end
@@ -334,7 +334,7 @@ function EFFECT:Airburst( SmokeColor )
 			AirBurst:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			AirBurst:SetAirResistance( 200 ) 			 
 			AirBurst:SetGravity( Vector( math.random(-10,10)*self.Radius, math.random(-10,10)*self.Radius, 20 ) ) 			
-			AirBurst:SetColor( Color(SmokeColor.x,SmokeColor.y,SmokeColor.z ))
+			AirBurst:SetColor( SmokeColor.x,SmokeColor.y,SmokeColor.z )
 		end
 	end
 

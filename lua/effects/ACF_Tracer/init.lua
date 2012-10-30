@@ -33,7 +33,7 @@ function EFFECT:Think( )
 			Light:SetRollDelta( math.Rand(-2, 2) )			
 			Light:SetAirResistance( 100 ) 			 
 			Light:SetGravity( Vector( math.random(-10,10)*self.Radius, math.random(-10,10)*self.Radius, 250 ) ) 			
-			Light:SetColor( Color(170,140,90 ))
+			Light:SetColor( 170,140,90 )
 		end
 	
 	end

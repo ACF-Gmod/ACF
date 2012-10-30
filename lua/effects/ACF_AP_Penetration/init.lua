@@ -70,7 +70,7 @@ function EFFECT:Metal()
 			Debris:SetRollDelta( math.Rand(-3, 3) )			
 			Debris:SetAirResistance( 100 ) 			 
 			Debris:SetGravity( Vector( 0, 0, -650 ) ) 			
-			Debris:SetColor( Color(120,120,120 ))
+			Debris:SetColor( 120,120,120 )
 		end
 	end
 		
@@ -91,7 +91,7 @@ function EFFECT:Metal()
 			Embers:SetRollDelta( math.Rand(-0.2, 0.2) )	
 			Embers:SetAirResistance( 20 ) 			 
 			Embers:SetGravity( VectorRand()*10 ) 			
-			Embers:SetColor( Color(200,200,200 ))
+			Embers:SetColor( 200,200,200 )
 		end
 	end
 
@@ -124,7 +124,7 @@ function EFFECT:Concrete()
 			Debris:SetRollDelta( math.Rand(-3, 3) )			
 			Debris:SetAirResistance( 100 ) 			 
 			Debris:SetGravity( Vector( 0, 0, -650 ) ) 			
-			Debris:SetColor( Color(120,120,120 ))
+			Debris:SetColor( 120,120,120 )
 		end
 	end
 	
@@ -143,7 +143,7 @@ function EFFECT:Concrete()
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Smoke:SetAirResistance( 200 ) 			 
 			Smoke:SetGravity( Vector( math.random(-5,5)*self.Scale, math.random(-5,5)*self.Scale, -50 ) ) 			
-			Smoke:SetColor( Color(90,90,90 ))
+			Smoke:SetColor( 90,90,90 )
 		end
 	
 	end
@@ -165,7 +165,7 @@ function EFFECT:Concrete()
 			Embers:SetRollDelta( math.Rand(-0.2, 0.2) )	
 			Embers:SetAirResistance( 20 ) 			 
 			Embers:SetGravity( VectorRand()*10 ) 			
-			Embers:SetColor( Color(200,200,200 ))
+			Embers:SetColor( 200,200,200 )
 		end
 	end
 

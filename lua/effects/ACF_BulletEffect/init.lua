@@ -55,8 +55,9 @@ function EFFECT:Init( data )
 		
 		if BulletData.Crate:GetNetworkedInt( "Tracer" ) > 0 then
 			BulletData.Tracer = ParticleEmitter( BulletData.SimPos )
-			local r,g,b,a = BulletData.Crate:GetColor()
-			BulletData.TracerColour = Vector(r,g,b)
+			local col = BulletData.Crate:GetColor()
+			BulletData.TracerColour = Vector(col.r,col.g,col.b)
+
 		end
 		
 		
@@ -117,7 +118,7 @@ function EFFECT:ApplyMovement( Bullet )
 			if (Light) then		
 				Light:SetAngles( Bullet.SimFlight:Angle() )
 				Light:SetVelocity( Bullet.SimFlight:GetNormalized() )
-				Light:SetColor( Color(Bullet.TracerColour.x, Bullet.TracerColour.y, Bullet.TracerColour.z ))
+				Light:SetColor( Bullet.TracerColour.x, Bullet.TracerColour.y, Bullet.TracerColour.z )
 				Light:SetDieTime( 0.1 )
 				Light:SetStartAlpha( 255 )
 				Light:SetEndAlpha( 155 )
@@ -130,7 +131,7 @@ function EFFECT:ApplyMovement( Bullet )
 			if (Smoke) then		
 				Smoke:SetAngles( Bullet.SimFlight:Angle() )
 				--Smoke:SetVelocity( Vector(0,0,0) )
-				Smoke:SetColor( Color(200 , 200 , 200 ))
+				Smoke:SetColor( 200 , 200 , 200 )
 				Smoke:SetDieTime( 1.2 )
 				Smoke:SetStartAlpha( 10 )
 				Smoke:SetEndAlpha( 0 )

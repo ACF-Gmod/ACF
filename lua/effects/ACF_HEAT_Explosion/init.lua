@@ -26,7 +26,7 @@ function EFFECT:Init( data )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Smoke:SetAirResistance( 300 ) 			 
 			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -450 ) ) 			
-			Smoke:SetColor( Color(160,160,160) )
+			Smoke:SetColor( 160,160,160)
 		end
 
 	end
@@ -46,7 +46,7 @@ function EFFECT:Init( data )
 			Debris:SetRollDelta( math.Rand(-3, 3) )			
 			Debris:SetAirResistance( 200 ) 			 
 			Debris:SetGravity( Vector( 0, 0, -650 ) ) 			
-			Debris:SetColor( Color(120,120,120 ))
+			Debris:SetColor( 120,120,120 )
 		end
 	end
 		
@@ -67,7 +67,7 @@ function EFFECT:Init( data )
 			Embers:SetRollDelta( math.Rand(-0.2, 0.2) )	
 			Embers:SetAirResistance( 20 ) 			 
 			Embers:SetGravity( Vector( 0, 0, -650 ) ) 			
-			Embers:SetColor( Color(200,200,200 ))
+			Embers:SetColor( 200,200,200 )
 		end
 	end	
 	

@@ -43,7 +43,7 @@ function EFFECT:Think()
 		Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
 		Smoke:SetAirResistance( 50 ) 			 
 		Smoke:SetGravity( Vector( math.Rand(0, 0)*self.Scale, math.Rand(0, 0)*self.Scale, 0 ) ) 			
-		Smoke:SetColor( Color(90,90,90 ))
+		Smoke:SetColor( 90,90,90 )
 	end
 	
 	local Fire = self.Emitter:Add( "particles/flamelet"..math.random(1,5), self.Entity:GetPos())
@@ -59,7 +59,7 @@ function EFFECT:Think()
 		Fire:SetRollDelta( math.Rand(-0.2, 0.2) )			
 		Fire:SetAirResistance( 100 ) 			 
 		Fire:SetGravity( VectorRand()*self.Scale ) 			
-		Fire:SetColor( Color(255,255,255 ))
+		Fire:SetColor( 255,255,255 )
 	end
 	
 	return self.LifeTime > RealTime()
