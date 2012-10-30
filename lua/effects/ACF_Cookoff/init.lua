@@ -13,6 +13,7 @@ function EFFECT:Init( data )
 	self.Entity:SetMoveType( MOVETYPE_VPHYSICS )
 	self.Entity:SetSolid( SOLID_VPHYSICS )
 	self.Entity:SetColor( Color(0,0,0,0 ))
+	self.Entity:SetRenderMode(RENDERMODE_TRANSALPHA)
 	--Msg("Effect Spawned/n")
 	
 	self.LifeTime = RealTime() + math.random(1, 2)
