@@ -342,9 +342,15 @@ function ENT:Calc( InputRPM, InputInertia )
 				self.WheelReqTq[Key] = WheelEnt:Calc( InputRPM*self.GearRatio, InputInertia/self.GearRatio )*self.GearRatio
 			else
 				local RPM = self:CalcWheel( Key, WheelEnt, SelfWorld )
-				if RPM < InputRPM then
-					self.WheelReqTq[Key] = math.min(Clutch, (InputRPM - RPM)*InputInertia )
-				end
+				if InputRPM > 0 then
+                    if RPM < InputRPM then
+                        self.WheelReqTq[Key] = math.min(Clutch, (InputRPM - RPM)*InputInertia )
+                    end
+                else
+                    if RPM > InputRPM then
+                        self.WheelReqTq[Key] = math.max(-Clutch, (RPM - InputRPM)*InputInertia )
+                    end
+                end
 			end
 			self.TotalReqTq = self.TotalReqTq + self.WheelReqTq[Key]
 		else
