@@ -1,4 +1,4 @@
-AddCSLuaFile( "ACF/Shared/Rounds/RoundFunctions.lua" )
+AddCSLuaFile( "acf/shared/rounds/roundfunctions.lua" )
 
 function ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 

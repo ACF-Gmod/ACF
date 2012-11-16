@@ -1,5 +1,6 @@
 particles_manifest
 {
+	"file"		"particles/explosion1.pcf"
 	"file"		"particles/rocket_motor.pcf"
 	"file"		"particles/acf_muzzleflashes.pcf"
 

@@ -1,4 +1,4 @@
-AddCSLuaFile( "ACF/Shared/ACFGunList.lua" )
+AddCSLuaFile( "acf/shared/acfgunlist.lua" )
 
 
 -- local Exemple = {}  --That name is just a variable name and doesn't have much meaning
