@@ -1,4 +1,4 @@
-AddCSLuaFile( "ACF/Shared/ACFMobilityList.lua" )
+AddCSLuaFile( "acf/shared/acfmobilitylist.lua" )
 
 local MobilityTable = {}  --Start mobility listing
 
