@@ -1,4 +1,4 @@
-AddCSLuaFile( "acf/shared/rounds/roundhe.lua" )
+AddCSLuaFile( "ACF/Shared/Rounds/RoundHE.lua" )
 
 local DefTable = {}
 	DefTable.type = "Ammo"										--Tells the spawn menu what entity to spawn
