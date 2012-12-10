@@ -9,6 +9,9 @@ local GearSMT = 550
 local GearMMT = 1900
 local GearLMT = 10000
 local GearTDSMT = 800 --Max torque for 1/2 speed smalls
+local GearCVTST = 150
+local GearCVTMT = 340 
+local GearCVTLT = 3200
 
 --1 speed weights
 local Gear1SW = 10
@@ -35,7 +38,10 @@ local Gear8SW = 80
 local Gear8MW = 160
 local Gear8LW = 320
 
-
+--CVT weights
+local GearCVTSW = 30
+local GearCVTMW = 60
+local GearCVTLW = 515
 
 
 --fix 6.5l i6 sound & 1l sound
@@ -3387,8 +3393,6 @@ local Gear8STM = {}
 MobilityTable["8Gear-ST-M"] = Gear8STM
 
 
-
-
 local Gear8STL = {}
 	Gear8STL.id = "8Gear-ST-L"
 	Gear8STL.ent = "acf_gearbox"
@@ -3421,6 +3425,412 @@ local Gear8STL = {}
 MobilityTable["8Gear-ST-L"] = Gear8STL
 
 
+-- CVT gearboxes
+local GearCVTSTS = {}
+	GearCVTSTS.id = "CVT-ST-S"
+	GearCVTSTS.ent = "acf_gearbox"
+	GearCVTSTS.type = "Mobility"
+	GearCVTSTS.name = "CVT, Straight, Small"
+	GearCVTSTS.desc = "A small straight-through CVT with very limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTSTS.model = "models/engines/t5small.mdl"
+	GearCVTSTS.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTSTS.category = "CVT"
+	GearCVTSTS.weight = GearCVTSW
+	GearCVTSTS.switch = 0.2
+	GearCVTSTS.maxtq = GearCVTST
+	GearCVTSTS.gears = 2
+	GearCVTSTS.doubleclutch = false
+    GearCVTSTS.cvt = true
+	GearCVTSTS.geartable = {}
+        GearCVTSTS.geartable[-2] = 5000 --target rpm slider
+		GearCVTSTS.geartable[-1] = 0.5 --final drive
+		GearCVTSTS.geartable[0] = 0
+        GearCVTSTS.geartable[1] = 0.1
+		GearCVTSTS.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTSTS.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTSTS.guiupdate = function() return end
+	end
+MobilityTable["CVT-ST-S"] = GearCVTSTS
+
+local GearCVTSTM = {}
+	GearCVTSTM.id = "CVT-ST-M"
+	GearCVTSTM.ent = "acf_gearbox"
+	GearCVTSTM.type = "Mobility"
+	GearCVTSTM.name = "CVT, Straight, Medium"
+	GearCVTSTM.desc = "A medium straight-through CVT with limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTSTM.model = "models/engines/t5med.mdl"
+	GearCVTSTM.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTSTM.category = "CVT"
+	GearCVTSTM.weight = GearCVTMW
+	GearCVTSTM.switch = 0.3
+	GearCVTSTM.maxtq = GearCVTMT
+	GearCVTSTM.gears = 2
+	GearCVTSTM.doubleclutch = false
+    GearCVTSTM.cvt = true
+	GearCVTSTM.geartable = {}
+        GearCVTSTM.geartable[-2] = 5000 --target rpm slider
+		GearCVTSTM.geartable[-1] = 0.5 --final drive
+		GearCVTSTM.geartable[0] = 0
+        GearCVTSTM.geartable[1] = 0.1
+		GearCVTSTM.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTSTM.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTSTM.guiupdate = function() return end
+	end
+MobilityTable["CVT-ST-M"] = GearCVTSTM
+
+local GearCVTSTL = {}
+	GearCVTSTL.id = "CVT-ST-L"
+	GearCVTSTL.ent = "acf_gearbox"
+	GearCVTSTL.type = "Mobility"
+	GearCVTSTL.name = "CVT, Straight, Large"
+	GearCVTSTL.desc = "A heavy duty straight-through CVT with limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTSTL.model = "models/engines/t5large.mdl"
+	GearCVTSTL.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTSTL.category = "CVT"
+	GearCVTSTL.weight = GearCVTLW
+	GearCVTSTL.switch = 0.5
+	GearCVTSTL.maxtq = GearCVTLT
+	GearCVTSTL.gears = 2
+	GearCVTSTL.doubleclutch = false
+    GearCVTSTL.cvt = true
+	GearCVTSTL.geartable = {}
+        GearCVTSTL.geartable[-2] = 5000 --target rpm slider
+		GearCVTSTL.geartable[-1] = 0.5 --final drive
+		GearCVTSTL.geartable[0] = 0
+        GearCVTSTL.geartable[1] = 0.1
+		GearCVTSTL.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTSTL.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTSTL.guiupdate = function() return end
+	end
+MobilityTable["CVT-ST-L"] = GearCVTSTL
+
+local GearCVTLS = {}
+	GearCVTLS.id = "CVT-L-S"
+	GearCVTLS.ent = "acf_gearbox"
+	GearCVTLS.type = "Mobility"
+	GearCVTLS.name = "CVT, Inline, Small"
+	GearCVTLS.desc = "A small inline CVT with very limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTLS.model = "models/engines/linear_s.mdl"
+	GearCVTLS.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTLS.category = "CVT"
+	GearCVTLS.weight = GearCVTSW
+	GearCVTLS.switch = 0.2
+	GearCVTLS.maxtq = GearCVTST
+	GearCVTLS.gears = 2
+	GearCVTLS.doubleclutch = false
+    GearCVTLS.cvt = true
+	GearCVTLS.geartable = {}
+        GearCVTLS.geartable[-2] = 5000 --target rpm slider
+		GearCVTLS.geartable[-1] = 0.5 --final drive
+		GearCVTLS.geartable[0] = 0
+        GearCVTLS.geartable[1] = 0.1
+		GearCVTLS.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTLS.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTLS.guiupdate = function() return end
+	end
+MobilityTable["CVT-L-S"] = GearCVTLS
+
+local GearCVTLM = {}
+	GearCVTLM.id = "CVT-L-M"
+	GearCVTLM.ent = "acf_gearbox"
+	GearCVTLM.type = "Mobility"
+	GearCVTLM.name = "CVT, Inline, Medium"
+	GearCVTLM.desc = "A medium inline CVT with limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTLM.model = "models/engines/linear_m.mdl"
+	GearCVTLM.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTLM.category = "CVT"
+	GearCVTLM.weight = GearCVTMW
+	GearCVTLM.switch = 0.3
+	GearCVTLM.maxtq = GearCVTMT
+	GearCVTLM.gears = 2
+	GearCVTLM.doubleclutch = false
+    GearCVTLM.cvt = true
+	GearCVTLM.geartable = {}
+        GearCVTLM.geartable[-2] = 5000 --target rpm slider
+		GearCVTLM.geartable[-1] = 0.5 --final drive
+		GearCVTLM.geartable[0] = 0
+        GearCVTLM.geartable[1] = 0.1
+		GearCVTLM.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTLM.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTLM.guiupdate = function() return end
+	end
+MobilityTable["CVT-L-M"] = GearCVTLM
+
+local GearCVTLL = {}
+	GearCVTLL.id = "CVT-L-L"
+	GearCVTLL.ent = "acf_gearbox"
+	GearCVTLL.type = "Mobility"
+	GearCVTLL.name = "CVT, Inline, Large"
+	GearCVTLL.desc = "A heavy duty inline CVT with limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTLL.model = "models/engines/linear_l.mdl"
+	GearCVTLL.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTLL.category = "CVT"
+	GearCVTLL.weight = GearCVTLW
+	GearCVTLL.switch = 0.5
+	GearCVTLL.maxtq = GearCVTLT
+	GearCVTLL.gears = 2
+	GearCVTLL.doubleclutch = false
+    GearCVTLL.cvt = true
+	GearCVTLL.geartable = {}
+        GearCVTLL.geartable[-2] = 5000 --target rpm slider
+		GearCVTLL.geartable[-1] = 0.5 --final drive
+		GearCVTLL.geartable[0] = 0
+        GearCVTLL.geartable[1] = 0.1
+		GearCVTLL.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTLL.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTLL.guiupdate = function() return end
+	end
+MobilityTable["CVT-L-L"] = GearCVTLL
+
+local GearCVTTS = {}
+	GearCVTTS.id = "CVT-T-S"
+	GearCVTTS.ent = "acf_gearbox"
+	GearCVTTS.type = "Mobility"
+	GearCVTTS.name = "CVT, Transaxial, Small"
+	GearCVTTS.desc = "A small transaxial CVT with very limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTTS.model = "models/engines/transaxial_s.mdl"
+	GearCVTTS.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTTS.category = "CVT"
+	GearCVTTS.weight = GearCVTSW
+	GearCVTTS.switch = 0.2
+	GearCVTTS.maxtq = GearCVTST
+	GearCVTTS.gears = 2
+	GearCVTTS.doubleclutch = false
+    GearCVTTS.cvt = true
+	GearCVTTS.geartable = {}
+        GearCVTTS.geartable[-2] = 5000 --target rpm slider
+		GearCVTTS.geartable[-1] = 0.5 --final drive
+		GearCVTTS.geartable[0] = 0
+        GearCVTTS.geartable[1] = 0.1
+		GearCVTTS.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTTS.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTTS.guiupdate = function() return end
+	end
+MobilityTable["CVT-T-S"] = GearCVTTS
+
+local GearCVTTM = {}
+	GearCVTTM.id = "CVT-T-M"
+	GearCVTTM.ent = "acf_gearbox"
+	GearCVTTM.type = "Mobility"
+	GearCVTTM.name = "CVT, Transaxial, Medium"
+	GearCVTTM.desc = "A medium transaxial CVT with limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTTM.model = "models/engines/transaxial_m.mdl"
+	GearCVTTM.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTTM.category = "CVT"
+	GearCVTTM.weight = GearCVTMW
+	GearCVTTM.switch = 0.3
+	GearCVTTM.maxtq = GearCVTMT
+	GearCVTTM.gears = 2
+	GearCVTTM.doubleclutch = false
+    GearCVTTM.cvt = true
+	GearCVTTM.geartable = {}
+        GearCVTTM.geartable[-2] = 5000 --target rpm slider
+		GearCVTTM.geartable[-1] = 0.5 --final drive
+		GearCVTTM.geartable[0] = 0
+        GearCVTTM.geartable[1] = 0.1
+		GearCVTTM.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTTM.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTTM.guiupdate = function() return end
+	end
+MobilityTable["CVT-T-M"] = GearCVTTM
+
+local GearCVTTL = {}
+	GearCVTTL.id = "CVT-T-L"
+	GearCVTTL.ent = "acf_gearbox"
+	GearCVTTL.type = "Mobility"
+	GearCVTTL.name = "CVT, Transaxial, Large"
+	GearCVTTL.desc = "A heavy duty transaxial CVT with limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTTL.model = "models/engines/transaxial_l.mdl"
+	GearCVTTL.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTTL.category = "CVT"
+	GearCVTTL.weight = GearCVTLW
+	GearCVTTL.switch = 0.5
+	GearCVTTL.maxtq = GearCVTLT
+	GearCVTTL.gears = 2
+	GearCVTTL.doubleclutch = false
+    GearCVTTL.cvt = true
+	GearCVTTL.geartable = {}
+        GearCVTTL.geartable[-2] = 5000 --target rpm slider
+		GearCVTTL.geartable[-1] = 0.5 --final drive
+		GearCVTTL.geartable[0] = 0
+        GearCVTTL.geartable[1] = 0.1
+		GearCVTTL.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTTL.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTTL.guiupdate = function() return end
+	end
+MobilityTable["CVT-T-L"] = GearCVTTL
+
+--CVT Dual Clutches
+local GearCVTLDS = {}
+	GearCVTLDS.id = "CVT-LD-S"
+	GearCVTLDS.ent = "acf_gearbox"
+	GearCVTLDS.type = "Mobility"
+	GearCVTLDS.name = "CVT, Inline Dual Clutch, Small"
+	GearCVTLDS.desc = "A small inline CVT with very limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTLDS.model = "models/engines/linear_s.mdl"
+	GearCVTLDS.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTLDS.category = "CVT"
+	GearCVTLDS.weight = GearCVTSW
+	GearCVTLDS.switch = 0.2
+	GearCVTLDS.maxtq = GearCVTST
+	GearCVTLDS.gears = 2
+	GearCVTLDS.doubleclutch = true
+    GearCVTLDS.cvt = true
+	GearCVTLDS.geartable = {}
+        GearCVTLDS.geartable[-2] = 5000 --target rpm slider
+		GearCVTLDS.geartable[-1] = 0.5 --final drive
+		GearCVTLDS.geartable[0] = 0
+        GearCVTLDS.geartable[1] = 0.1
+		GearCVTLDS.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTLDS.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTLDS.guiupdate = function() return end
+	end
+MobilityTable["CVT-LD-S"] = GearCVTLDS
+
+local GearCVTLDM = {}
+	GearCVTLDM.id = "CVT-LD-M"
+	GearCVTLDM.ent = "acf_gearbox"
+	GearCVTLDM.type = "Mobility"
+	GearCVTLDM.name = "CVT, Inline Dual Clutch, Medium"
+	GearCVTLDM.desc = "A medium inline CVT with limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTLDM.model = "models/engines/linear_m.mdl"
+	GearCVTLDM.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTLDM.category = "CVT"
+	GearCVTLDM.weight = GearCVTMW
+	GearCVTLDM.switch = 0.3
+	GearCVTLDM.maxtq = GearCVTMT
+	GearCVTLDM.gears = 2
+	GearCVTLDM.doubleclutch = true
+    GearCVTLDM.cvt = true
+	GearCVTLDM.geartable = {}
+        GearCVTLDM.geartable[-2] = 5000 --target rpm slider
+		GearCVTLDM.geartable[-1] = 0.5 --final drive
+		GearCVTLDM.geartable[0] = 0
+        GearCVTLDM.geartable[1] = 0.1
+		GearCVTLDM.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTLDM.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTLDM.guiupdate = function() return end
+	end
+MobilityTable["CVT-LD-M"] = GearCVTLDM
+
+local GearCVTLDL = {}
+	GearCVTLDL.id = "CVT-LD-L"
+	GearCVTLDL.ent = "acf_gearbox"
+	GearCVTLDL.type = "Mobility"
+	GearCVTLDL.name = "CVT, Inline Dual Clutch, Large"
+	GearCVTLDL.desc = "A heavy duty inline CVT with limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTLDL.model = "models/engines/linear_l.mdl"
+	GearCVTLDL.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTLDL.category = "CVT"
+	GearCVTLDL.weight = GearCVTLW
+	GearCVTLDL.switch = 0.5
+	GearCVTLDL.maxtq = GearCVTLT
+	GearCVTLDL.gears = 2
+	GearCVTLDL.doubleclutch = true
+    GearCVTLDL.cvt = true
+	GearCVTLDL.geartable = {}
+        GearCVTLDL.geartable[-2] = 5000 --target rpm slider
+		GearCVTLDL.geartable[-1] = 0.5 --final drive
+		GearCVTLDL.geartable[0] = 0
+        GearCVTLDL.geartable[1] = 0.1
+		GearCVTLDL.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTLDL.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTLDL.guiupdate = function() return end
+	end
+MobilityTable["CVT-LD-L"] = GearCVTLDL
+
+local GearCVTTDS = {}
+	GearCVTTDS.id = "CVT-TD-S"
+	GearCVTTDS.ent = "acf_gearbox"
+	GearCVTTDS.type = "Mobility"
+	GearCVTTDS.name = "CVT, Transaxial Dual Clutch, Small"
+	GearCVTTDS.desc = "A small transaxial CVT with very limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTTDS.model = "models/engines/transaxial_s.mdl"
+	GearCVTTDS.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTTDS.category = "CVT"
+	GearCVTTDS.weight = GearCVTSW
+	GearCVTTDS.switch = 0.2
+	GearCVTTDS.maxtq = GearCVTST
+	GearCVTTDS.gears = 2
+	GearCVTTDS.doubleclutch = true
+    GearCVTTDS.cvt = true
+	GearCVTTDS.geartable = {}
+        GearCVTTDS.geartable[-2] = 5000 --target rpm slider
+		GearCVTTDS.geartable[-1] = 0.5 --final drive
+		GearCVTTDS.geartable[0] = 0
+        GearCVTTDS.geartable[1] = 0.1
+		GearCVTTDS.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTTDS.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTTDS.guiupdate = function() return end
+	end
+MobilityTable["CVT-TD-S"] = GearCVTTDS
+
+local GearCVTTDM = {}
+	GearCVTTDM.id = "CVT-TD-M"
+	GearCVTTDM.ent = "acf_gearbox"
+	GearCVTTDM.type = "Mobility"
+	GearCVTTDM.name = "CVT, Transaxial Dual Clutch, Medium"
+	GearCVTTDM.desc = "A medium transaxial CVT with limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTTDM.model = "models/engines/transaxial_m.mdl"
+	GearCVTTDM.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTTDM.category = "CVT"
+	GearCVTTDM.weight = GearCVTMW
+	GearCVTTDM.switch = 0.3
+	GearCVTTDM.maxtq = GearCVTMT
+	GearCVTTDM.gears = 2
+	GearCVTTDM.doubleclutch = true
+    GearCVTTDM.cvt = true
+	GearCVTTDM.geartable = {}
+        GearCVTTDM.geartable[-2] = 5000 --target rpm slider
+		GearCVTTDM.geartable[-1] = 0.5 --final drive
+		GearCVTTDM.geartable[0] = 0
+        GearCVTTDM.geartable[1] = 0.1
+		GearCVTTDM.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTTDM.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTTDM.guiupdate = function() return end
+	end
+MobilityTable["CVT-TD-M"] = GearCVTTDM
+
+local GearCVTTDL = {}
+	GearCVTTDL.id = "CVT-TD-L"
+	GearCVTTDL.ent = "acf_gearbox"
+	GearCVTTDL.type = "Mobility"
+	GearCVTTDL.name = "CVT, Transaxial Dual Clutch, Large"
+	GearCVTTDL.desc = "A heavy duty transaxial CVT with limited torque rating.\n\nA CVT transmission will automatically adjust the ratio of the drive gear to keep the input rpm at a targetted rpm.\nThis allows the engine to always operate at peak torque and eliminates shift-shock, at the cost of increased weight and limited torque ratings."
+	GearCVTTDL.model = "models/engines/transaxial_l.mdl"
+	GearCVTTDL.sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
+	GearCVTTDL.category = "CVT"
+	GearCVTTDL.weight = GearCVTLW
+	GearCVTTDL.switch = 0.5
+	GearCVTTDL.maxtq = GearCVTLT
+	GearCVTTDL.gears = 2
+	GearCVTTDL.doubleclutch = true
+    GearCVTTDL.cvt = true
+	GearCVTTDL.geartable = {}
+        GearCVTTDL.geartable[-2] = 5000 --target rpm slider
+		GearCVTTDL.geartable[-1] = 0.5 --final drive
+		GearCVTTDL.geartable[0] = 0
+        GearCVTTDL.geartable[1] = 0.1
+		GearCVTTDL.geartable[2] = -0.1
+	if ( CLIENT ) then
+		GearCVTTDL.guicreate = (function( Panel, Table ) ACFGearboxGUICreate( Table ) end or nil)
+		GearCVTTDL.guiupdate = function() return end
+	end
+MobilityTable["CVT-TD-L"] = GearCVTTDL
 
 -- local Tracks = {}
 	-- Tracks.id = "CarV8"
