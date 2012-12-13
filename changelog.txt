@@ -219,3 +219,12 @@ Nogravving dead props bug fixed
 --added working copy of ACF for Gmod 13
 --this is the base of ACF for Gmod 13, not everything works, but its a starting point.
 --applyoffsetforce seems to not be working properly, wheels are still removed because of spazzing.
+*r31
+--new autocannon model
+*r32
+--fixed issue with linux servers
+*r33
+--fixed negative gears not working correctly when not directly driving wheels
+*r34
+--added cvts (continuously variable transmissions)
+--attempts to keep input rpm at a target rpm by changing gear 1 ratio
