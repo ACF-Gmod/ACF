@@ -41,7 +41,7 @@ local Gear8LW = 320
 --CVT weights
 local GearCVTSW = 30
 local GearCVTMW = 60
-local GearCVTLW = 515
+local GearCVTLW = 360
 
 
 --fix 6.5l i6 sound & 1l sound
