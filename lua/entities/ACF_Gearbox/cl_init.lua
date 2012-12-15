@@ -70,6 +70,8 @@ function ACFGearboxGUICreate( Table )
 			ACF_GearsSlider(ID, Value, Table.id)
 		elseif ID == -1 then
 			ACF_GearsSlider(10, Value, Table.id, "Final Drive")
+        elseif ID == -2 then
+            ACF_GearsSlider(9, Value, Table.id, "Target Input RPM", 1)
 		end
 	end
 	
@@ -81,14 +83,14 @@ function ACFGearboxGUICreate( Table )
 	maxtorque = Table.maxtq
 end
 
-function ACF_GearsSlider(Gear, Value, ID, Desc)
+function ACF_GearsSlider(Gear, Value, ID, Desc, Cvt)
 
 	if Gear and not acfmenupanel["CData"][Gear] then	
 		acfmenupanel["CData"][Gear] = vgui.Create( "DNumSlider", acfmenupanel.CustomDisplay )
 			acfmenupanel["CData"][Gear]:SetText( Desc or "Gear "..Gear )
-			acfmenupanel["CData"][Gear]:SetMin( -1 )
-			acfmenupanel["CData"][Gear]:SetMax( 1 )
-			acfmenupanel["CData"][Gear]:SetDecimals( 2 )
+			acfmenupanel["CData"][Gear]:SetMin( Cvt and 1 or -1 )
+			acfmenupanel["CData"][Gear]:SetMax( Cvt and 10000 or 1 )
+			acfmenupanel["CData"][Gear]:SetDecimals( (not Cvt) and 2 or 0 )
 			acfmenupanel["CData"][Gear]["Gear"] = Gear
 			acfmenupanel["CData"][Gear]["ID"] = ID
 			acfmenupanel["CData"][Gear]:SetValue(Value)
