@@ -1,13 +1,15 @@
-
+--Chad provided a fix for multicore rendering.
 include('shared.lua')
 
-surface.CreateFont("Arial", 40, 1000, true, false, "TorchFont")
+surface.CreateFont("torchfont", {size=40, weight=1000, antialias=true, additive=false, font="arial"})
+
+-- moved these to the top, you don't want to be calling this every frame
+local RT = GetRenderTarget( "GModToolgunScreen", 256, 256 )
+local ToolGunMaterial = Material( "models/weapons/v_toolgun/screen" )
+local tex = surface.GetTextureID( "models/props_combine/combine_interface_disp" )
 
 function SWEP:ViewModelDrawn()
 
-	local RT = GetRenderTarget("GModToolgunScreen", 256, 256)
-	local ToolGunMaterial = Material("models/weapons/v_toolgun/screen")
-	
 	local Health = math.floor((self.Weapon:GetNetworkedBool("HP")or 0) *10)/10 
 	local MaxHealth = math.floor((self.Weapon:GetNetworkedBool("MaxHP")or 0) * 10)/10
 	local Armour = math.floor((self.Weapon:GetNetworkedBool("Armour")or 0) *100)/100
@@ -19,38 +21,41 @@ function SWEP:ViewModelDrawn()
 	local HealthPercent = Health/MaxHealth
 	local ArmourPercent = Armour/MaxArmour
 
-	ToolGunMaterial:SetMaterialTexture("$basetexture", RT)
+	ToolGunMaterial:SetTexture("$basetexture", RT)
+	
+	local OldRT = render.GetRenderTarget();
 
 	render.SetRenderTarget(RT)
 	render.SetViewPort(0, 0, 256, 256)
-	cam.Start2D()
+	
+		cam.Start2D()
 
-	local Flicker = math.random(100,200)
-	surface.SetDrawColor(255,255,255,Flicker)
-	local tex=surface.GetTextureID(	"models/props_combine/combine_interface_disp")
-	surface.SetTexture(tex) 
-	surface.DrawTexturedRect(0, 0, 256, 256)
-	surface.SetDrawColor(255,255,255,255)
+			local Flicker = math.random(100,200)
+			surface.SetDrawColor(255,255,255,Flicker)
+			
+			surface.SetTexture(tex) 
+			surface.DrawTexturedRect(0, 0, 256, 256)
+			surface.SetDrawColor(255,255,255,255)
 
-	surface.SetFont("TorchFont")
-	local w, h = surface.GetTextSize(" ")
-	
-	draw.SimpleTextOutlined("ACF Stats", "TorchFont", 128, 30, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
-	
-	draw.RoundedBox( 5, 10, 83, 236, 64, Color(200, 200, 200, Flicker))
-	draw.RoundedBox( 5, 15, 88, ArmourPercent*226, 54, Color(0, 0, 200, Flicker))
-	
-	draw.RoundedBox( 5, 10, 183, 236, 64, Color(200, 200, 200, Flicker))
-	draw.RoundedBox( 5, 15, 188, HealthPercent*226, 54, Color(200, 0, 0, Flicker))
-	
-	draw.SimpleTextOutlined("Armour", "TorchFont", 128, 100, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
-		draw.SimpleTextOutlined(ArmourTxt, "TorchFont", 128, 150, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
-	
-	draw.SimpleTextOutlined("Health", "TorchFont", 128, 200, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
-		draw.SimpleTextOutlined(HealthTxt, "TorchFont", 128, 250, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
+			--surface.SetFont("TorchFont")			-- this was unused, no reason to call it
+			--local w, h = surface.GetTextSize(" ")	-- this was unused, no reason to call it
+			
+			draw.SimpleTextOutlined("ACF Stats", "torchfont", 128, 30, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
+			
+			draw.RoundedBox( 5, 10, 83, 236, 64, Color(200, 200, 200, Flicker))
+			draw.RoundedBox( 5, 15, 88, ArmourPercent*226, 54, Color(0, 0, 200, Flicker))
+			
+			draw.RoundedBox( 5, 10, 183, 236, 64, Color(200, 200, 200, Flicker))
+			draw.RoundedBox( 5, 15, 188, HealthPercent*226, 54, Color(200, 0, 0, Flicker))
+			
+			draw.SimpleTextOutlined("Armour", "torchfont", 128, 100, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
+			draw.SimpleTextOutlined(ArmourTxt, "torchfont", 128, 150, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
+			
+			draw.SimpleTextOutlined("Health", "torchfont", 128, 200, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
+			draw.SimpleTextOutlined(HealthTxt, "torchfont", 128, 250, Color(224, 224, 255, Flicker), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 4, Color(0, 0, 0, Flicker))
 
-	
-	cam.End2D()
-	render.SetRenderTarget(RT)
+		cam.End2D()
+		
+	render.SetRenderTarget(OldRT)
 	
 end

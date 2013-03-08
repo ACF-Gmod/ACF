@@ -1,4 +1,4 @@
-AddCSLuaFile( "ACF/Shared/Rounds/RoundAP.lua" )
+AddCSLuaFile( "acf/shared/rounds/roundap.lua" )
 
 local DefTable = {}
 	DefTable.type = "Ammo"										--Tells the spawn menu what entity to spawn
@@ -26,6 +26,7 @@ local DefTable = {}
 list.Set( "ACFRoundTypes", "AP", DefTable )  --Set the round properties
 list.Set( "ACFIdRounds", DefTable.netid , "AP" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
 
+ACF.AmmoBlacklist["AP"] = { "MO" }
 
 function ACF_APConvert( Crate, PlayerData )		--Function to convert the player's slider data into the complete round data
 	
@@ -115,6 +116,8 @@ end
 --Ammocrate stuff
 function ACF_APNetworkData( Crate, BulletData )
 
+	Crate:SetNetworkedString("AmmoType","AP")
+	Crate:SetNetworkedString("AmmoID",BulletData["Id"])
 	Crate:SetNetworkedInt("Caliber",BulletData["Caliber"])	
 	Crate:SetNetworkedInt("ProjMass",BulletData["ProjMass"])
 	Crate:SetNetworkedInt("PropMass",BulletData["PropMass"])
@@ -174,7 +177,7 @@ end
 --GUI stuff after this
 function ACF_APGUICreate( Panel, Table )
 
-	acfmenupanel:AmmoSelect()
+	acfmenupanel:AmmoSelect( ACF.AmmoBlacklist["AP"] )
 	
 	acfmenupanel:CPanelText("Desc", "")	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "")	--Total round length (Name, Desc)
@@ -222,7 +225,7 @@ function ACF_APGUIUpdate( Panel, Table )
 	
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData["Type"]]["desc"])	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+Data.Tracer)*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
-	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m\s")	--Proj muzzle velocity (Name, Desc)
+	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m\\s")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("PenetrationDisplay", "Maximum Penetration : "..math.floor(Data.MaxPen).." mm RHA")	--Proj muzzle penetration (Name, Desc)
 	
 end

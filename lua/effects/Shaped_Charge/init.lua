@@ -22,7 +22,7 @@
 			particle:SetStartSize( 5 )
 			particle:SetEndSize( 15 )
 			particle:SetAirResistance( 350 )
-			particle:SetColor( 255 , 255 , 255 )
+			particle:SetColor(255 , 255 , 255 )
 		end
 	end
 		

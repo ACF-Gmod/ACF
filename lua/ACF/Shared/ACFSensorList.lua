@@ -1,4 +1,4 @@
-AddCSLuaFile( "ACF/Shared/ACFSensorList.lua" )
+AddCSLuaFile( "acf/shared/acfsensorlist.lua" )
 
 local SensorTable = {}  --Start sensors listing
 

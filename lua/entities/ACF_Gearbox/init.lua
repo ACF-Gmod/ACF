@@ -24,7 +24,7 @@ function ENT:Initialize()
 	self.LBrake = 0
 	self.RBrake = 0
 
-	self.Gear = 0
+	self.Gear = 1
 	self.GearRatio = 0
 	self.ChangeFinished = 0
 	
@@ -83,10 +83,10 @@ function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data
 		Gearbox.Gear7 = Data7
 		Gearbox.Gear8 = Data8
 		Gearbox.Gear9 = Data9
-		
+				
 	Gearbox:SetModel( Gearbox.Model )	
 		
-	local Inputs = {"Gear"}
+	local Inputs = {"Gear","Gear Up","Gear Down"}
 	if Gearbox.Dual then
 		table.insert(Inputs,"Left Clutch")
 		table.insert(Inputs,"Right Clutch")
@@ -98,7 +98,7 @@ function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data
 	end
 	
 	Gearbox.Inputs = Wire_CreateInputs( Gearbox.Entity, Inputs )
-	Gearbox.Outputs = WireLib.CreateSpecialOutputs( Gearbox.Entity, { "Ratio", "Entity" , "DebugN" }, { "NORMAL" , "ENTITY" , "NORMAL" , "NORMAL" } )
+	Gearbox.Outputs = WireLib.CreateSpecialOutputs( Gearbox.Entity, { "Ratio", "Entity" , "Current Gear" }, { "NORMAL" , "ENTITY" , "NORMAL" , "NORMAL" } )
 	Wire_TriggerOutput(Gearbox.Entity, "Entity", Gearbox.Entity)
 	Gearbox.WireDebugName = "ACF Gearbox"
 	
@@ -126,6 +126,8 @@ function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data
 	Owner:AddCount("_acf_Gearbox", Gearbox)
 	Owner:AddCleanup( "acfmenu", Gearbox )
 	
+	Gearbox:ChangeGear(1)
+	
 	timer.Simple(0.5, function() Gearbox:UpdateHUD() end ) 
 		
 	return Gearbox
@@ -138,11 +140,37 @@ function ENT:Update( ArgsTable )	--That table is the player data, as sorted in t
 	local Feedback = "Gearbox updated successfully"
 	if ( ArgsTable[1] != self.Owner ) then --Argtable[1] is the player that shot the tool
 		Feedback = "You don't own that gearbox !"
-	return end
+	return Feedback end
 		
-	if ( ArgsTable[4] != self.Id ) then --Argtable[4] is the gearbox ID, if it doesn't match don't load the new settings
-		Feedback = "Wrong gearbox model ! You need to load settings made with the same gearbox"
-	return end
+	local Id = ArgsTable[4]	--Argtable[4] is the engine ID
+	local List = list.Get("ACFEnts")
+	
+	if ( List["Mobility"][Id]["model"] != self.Model ) then --Make sure the models are the sames before doing a changeover
+		Feedback = "The new gearbox needs to have the same size and orientation as the old one !"
+	return Feedback end
+		
+	if self.Id != Id then
+		local Inputs = {"Gear","Gear Up","Gear Down"}
+		if self.Dual then
+			table.insert(Inputs,"Left Clutch")
+			table.insert(Inputs,"Right Clutch")
+			table.insert(Inputs,"Left Brake")
+			table.insert(Inputs,"Right Brake")
+		else
+			table.insert(Inputs, "Clutch")
+			table.insert(Inputs, "Brake")
+		end
+		
+		self.Id = Id
+		self.Mass = List["Mobility"][Id]["weight"]
+		self.SwitchTime = List["Mobility"][Id]["switch"]
+		self.MaxTorque = List["Mobility"][Id]["maxtq"]
+		self.Gears = List["Mobility"][Id]["gears"]
+		self.Dual = List["Mobility"][Id]["doubleclutch"]
+		
+		self.Inputs = Wire_CreateInputs( self.Entity, Inputs )
+		
+	end
 	
 	self.GearTable["Final"] = ArgsTable[14]
 	self.GearTable[1] = ArgsTable[5]
@@ -167,8 +195,8 @@ function ENT:Update( ArgsTable )	--That table is the player data, as sorted in t
 	self.Gear8 = ArgsTable[12]
 	self.Gear9 = ArgsTable[13]
 		
-	self.Gear = 0
-	
+	self:ChangeGear(1)
+		
 	self:UpdateHUD()
 	
 	return Feedback
@@ -192,6 +220,14 @@ function ENT:TriggerInput( iname , value )
 
 	if ( iname == "Gear" and self.Gear != math.floor(value) ) then
 		self:ChangeGear(math.floor(value))
+	elseif ( iname == "Gear Up" ) then
+		if ( self.Gear < self.Gears and value > 0 ) then
+			self:ChangeGear(math.floor(self.Gear + 1))
+		end
+	elseif ( iname == "Gear Down" ) then
+		if ( self.Gear > 1 and value > 0 ) then
+			self:ChangeGear(math.floor(self.Gear - 1))
+		end
 	elseif ( iname == "Clutch" ) then
 		self.LClutch = math.Clamp(1-value,0,1)*self.MaxTorque
 		self.RClutch = math.Clamp(1-value,0,1)*self.MaxTorque
@@ -278,12 +314,12 @@ function ENT:CheckEnts()		--Check if every entity we are linked to still actuall
 	
 end
 
-function ENT:Calc( InputRPM )
+function ENT:Calc( InputRPM, InputInertia )
 
-	if self.LastActive == CurTime() then return self.CurRPM end
+	if self.LastActive == CurTime() then return math.min(self.TotalReqTq, self.MaxTorque) end
 	if self.ChangeFinished < CurTime() and self.GearRatio != 0 then
 		self.InGear = true
-	end
+	else return 0 end
 
 	self:CheckEnts()
 
@@ -293,23 +329,27 @@ function ENT:Calc( InputRPM )
 	self.TotalReqTq = 0
 	
 	for Key, WheelEnt in pairs(self.WheelLink) do
-		local Clutch = 0
-		if self.WheelSide[Key] == 0 then
-			Clutch = self.LClutch
-		elseif self.WheelSide[Key] == 1 then
-			Clutch = self.RClutch
-		end
-		
-		self.WheelReqTq[Key] = 0
-		if WheelEnt.IsGeartrain then
-			self.WheelReqTq[Key] = WheelEnt:Calc( InputRPM*self.GearRatio )
-		else
-			local RPM = self:CalcWheel( Key, WheelEnt, SelfWorld )
-			if RPM < InputRPM then
-				self.WheelReqTq[Key] = Clutch
+		if ( WheelEnt:IsValid() ) then
+			local Clutch = 0
+			if self.WheelSide[Key] == 0 then
+				Clutch = self.LClutch
+			elseif self.WheelSide[Key] == 1 then
+				Clutch = self.RClutch
 			end
+		
+			self.WheelReqTq[Key] = 0
+			if WheelEnt.IsGeartrain then
+				self.WheelReqTq[Key] = math.abs(WheelEnt:Calc( InputRPM*self.GearRatio, InputInertia/self.GearRatio )*self.GearRatio)
+			else
+				local RPM = self:CalcWheel( Key, WheelEnt, SelfWorld )
+				if (InputRPM > 0 and RPM < InputRPM) or (InputRPM < 0 and RPM > InputRPM) then
+                    self.WheelReqTq[Key] = math.min(Clutch, (InputRPM - RPM)*InputInertia )
+                end
+			end
+			self.TotalReqTq = self.TotalReqTq + self.WheelReqTq[Key]
+		else
+			table.remove(self.WheelLink, Key)
 		end
-		self.TotalReqTq = self.TotalReqTq + self.WheelReqTq[Key]
 	end
 			
 	return math.min(self.TotalReqTq, self.MaxTorque)
@@ -317,24 +357,30 @@ function ENT:Calc( InputRPM )
 end
 
 function ENT:CalcWheel( Key, WheelEnt, SelfWorld )
+	if ( WheelEnt:IsValid() ) then
+		local WheelPhys = WheelEnt:GetPhysicsObject()
+		local VelDiff = (WheelEnt:LocalToWorld(WheelPhys:GetAngleVelocity())-WheelEnt:GetPos()) - SelfWorld
+		local BaseRPM = VelDiff:Dot(WheelEnt:LocalToWorld(self.WheelAxis[Key])-WheelEnt:GetPos())
+		local GearedRPM = BaseRPM / self.GearRatio / -6 --Reported BaseRPM is in angle per second and in the wrong direction, so we convert and add the gearratio
+		self.WheelVel[Key] = BaseRPM
 	
-	local WheelPhys = WheelEnt:GetPhysicsObject()
-	local VelDiff = (WheelEnt:LocalToWorld(WheelPhys:GetAngleVelocity())-WheelEnt:GetPos()) - SelfWorld
-	local BaseRPM = VelDiff:Dot(WheelEnt:LocalToWorld(self.WheelAxis[Key])-WheelEnt:GetPos())
-	local GearedRPM = BaseRPM / self.GearRatio / -6 --Reported BaseRPM is in angle per second and in the wrong direction, so we convert and add the gearratio
-	self.WheelVel[Key] = BaseRPM
-	
-	return GearedRPM
+		return GearedRPM
+	else
+		return 0
+	end
 	
 end
 
-function ENT:Act( Torque )
+function ENT:Act( Torque, DeltaTime )
 	
 	local ReactTq = 0
-	local AvailTq = math.min(math.abs(Torque)/self.TotalReqTq,1)/self.GearRatio*-(-Torque/math.abs(Torque))		--Calculate the ratio of total requested torque versus what's avaliable, and then multiply it but the current gearratio
-			
-	Wire_TriggerOutput(self.Entity, "DebugN", AvailTq)
-	
+	--local AvailTq = math.min(math.abs(Torque)/self.TotalReqTq,1)/self.GearRatio*-(-Torque/math.abs(Torque))		--Calculate the ratio of total requested torque versus what's avaliable, and then multiply it but the current gearratio
+	 local AvailTq = 0
+	if Torque != 0 then
+		AvailTq = math.min(math.abs(Torque)/self.TotalReqTq,1)/self.GearRatio*-(-Torque/math.abs(Torque))
+	end
+
+
 	for Key, OutputEnt in pairs(self.WheelLink) do
 		if self.WheelSide[Key] == 0 then
 			Brake = self.LBrake
@@ -343,9 +389,9 @@ function ENT:Act( Torque )
 		end
 		
 		if OutputEnt.IsGeartrain then
-			OutputEnt:Act( self.WheelReqTq[Key]*AvailTq )
+			OutputEnt:Act( self.WheelReqTq[Key]*AvailTq , DeltaTime )
 		else
-			self:ActWheel( Key, OutputEnt, self.WheelReqTq[Key]*AvailTq, Brake )
+			self:ActWheel( Key, OutputEnt, self.WheelReqTq[Key]*AvailTq, Brake , DeltaTime )
 			ReactTq = ReactTq + self.WheelReqTq[Key]*AvailTq
 		end
 	end
@@ -353,15 +399,15 @@ function ENT:Act( Torque )
 	local BoxPhys = self:GetPhysicsObject()
 	if BoxPhys:IsValid() and ReactTq != 0 then	
 		local Force = self:GetForward() * ReactTq - self:GetForward() * BrakeMult
-		BoxPhys:ApplyForceOffset( Force * 0.5, self:GetPos() + self:GetUp()*-40 )
-		BoxPhys:ApplyForceOffset( Force * -0.5, self:GetPos() + self:GetUp()*40 )
+		BoxPhys:ApplyForceOffset( Force * 39.37 * DeltaTime, self:GetPos() + self:GetUp()*-39.37 )
+		BoxPhys:ApplyForceOffset( Force * -39.37 * DeltaTime, self:GetPos() + self:GetUp()*39.37 )
 	end
 	
 	self.LastActive = CurTime()
 	
 end
 
-function ENT:ActWheel( Key, OutputEnt, Tq, Brake )
+function ENT:ActWheel( Key, OutputEnt, Tq, Brake , DeltaTime )
 
 	local OutPhys = OutputEnt:GetPhysicsObject()
 	local OutPos = OutputEnt:GetPos()
@@ -370,12 +416,12 @@ function ENT:ActWheel( Key, OutputEnt, Tq, Brake )
 	local Inertia = OutPhys:GetInertia()
 	local BrakeMult = 0
 	if Brake > 0 then
-		BrakeMult = self.WheelVel[Key] * Inertia * self.LBrake / 10
+		BrakeMult = self.WheelVel[Key] * Inertia * Brake / 10
 	end
 	local TorqueVec = TorqueAxis:Cross(Cross):GetNormalized() 
 	local Force = TorqueVec * Tq + TorqueVec * BrakeMult
-	OutPhys:ApplyForceOffset( Force * -0.5, OutPos + Cross*40 )
-	OutPhys:ApplyForceOffset( Force * 0.5, OutPos + Cross*-40 )
+	OutPhys:ApplyForceOffset( Force * -39.37 * DeltaTime, OutPos + Cross*39.37)
+	OutPhys:ApplyForceOffset( Force * 39.37 * DeltaTime, OutPos + Cross*-39.37 )
 	
 end
 
@@ -386,6 +432,7 @@ function ENT:ChangeGear(value)
 	self.ChangeFinished = CurTime() + self.SwitchTime
 	self.InGear = false
 	
+	Wire_TriggerOutput(self.Entity, "Current Gear", self.Gear)
 	self:EmitSound("buttons/lever7.wav",250,100)
 	Wire_TriggerOutput(self.Entity, "Ratio", self.GearRatio)
 	

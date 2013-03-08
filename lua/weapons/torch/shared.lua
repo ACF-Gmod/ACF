@@ -1,6 +1,6 @@
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
-include('shared.lua')
+--include('shared.lua')
 
 SWEP.Weight				= 5
 SWEP.AutoSwitchTo		= false
@@ -160,7 +160,12 @@ self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
 			self.Weapon:SetNetworkedInt( "Armour", ent.ACF.Armour )
 			self.Weapon:SetNetworkedInt( "MaxHP", ent.ACF.MaxHealth )
 			self.Weapon:SetNetworkedInt( "MaxArmour", ent.ACF.MaxArmour )
-			local HitRes = ACF_Damage ( ent , {Kinetic = 5,Momentum = 0,Penetration = 5} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
+			local HitRes = {}
+			if(ent:IsPlayer()) then
+				HitRes = ACF_Damage ( ent , {Kinetic = 0.05,Momentum = 0,Penetration = 0.05} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
+			else
+				HitRes = ACF_Damage ( ent , {Kinetic = 5,Momentum = 0,Penetration = 5} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
+			end
 			if HitRes.Kill then
 				constraint.RemoveAll( ent )
 				ent:SetParent(nil)

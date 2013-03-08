@@ -1,7 +1,7 @@
 include("shared.lua")
 
 ENT.RenderGroup 		= RENDERGROUP_OPAQUE
-
+local maxtorque = 0  -- this is for the max torque output on the tooltip - Wrex
 function ENT:Draw()
 	self:DoNormalDraw()
     Wire_Render(self.Entity)
@@ -27,14 +27,14 @@ function ACFGearboxCreateDisplayString( data, Timer )
 	for I = 1,List["Mobility"][Id]["gears"] do
 		Ent.DisplayString = Ent.DisplayString.."Gear "..I.." : "..tostring(data:ReadShort()/100).."\n"
 	end
-	Ent.DisplayString = Ent.DisplayString.."Final Gear : "..tostring(FinalGear).."\n"
+	Ent.DisplayString = Ent.DisplayString.."Final Gear : "..tostring(FinalGear).."\n Maximum Torque Rating: "..(maxtorque).."n-m / "..math.Round(maxtorque*0.73).."ft-lb"
 	if data:ReadBool() then
 		Ent:SetBodygroup(1,1)
 	else
 		Ent:SetBodygroup(1,0)
 	end
 	
-	if (not SinglePlayer()) then
+	if (not game.SinglePlayer()) then
 		local PlayerName = Ent:GetPlayerName()
 		Ent.DisplayString = Ent.DisplayString .."(" .. PlayerName .. ")"
 	end
@@ -74,11 +74,11 @@ function ACFGearboxGUICreate( Table )
 	end
 	
 	acfmenupanel:CPanelText("Desc", Table.desc)
-	acfmenupanel:CPanelText("MaxTorque", "Clutch Maximum Torque Rating : "..(Table.maxtq).."n-m")
+	acfmenupanel:CPanelText("MaxTorque", "Clutch Maximum Torque Rating : "..(Table.maxtq).."n-m / "..math.Round(Table.maxtq*0.73).."ft-lb")
 	acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.."kg")
 	
 	acfmenupanel.CustomDisplay:PerformLayout()
-	
+	maxtorque = Table.maxtq
 end
 
 function ACF_GearsSlider(Gear, Value, ID, Desc)

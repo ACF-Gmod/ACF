@@ -1,4 +1,4 @@
-AddCSLuaFile( "ACF/Shared/Rounds/RoundAPHE.lua" )
+AddCSLuaFile( "acf/shared/rounds/roundaphe.lua" )
 
 local DefTable = {}
 	DefTable.type = "Ammo"										--Tells the spawn menu what entity to spawn
@@ -26,6 +26,7 @@ local DefTable = {}
 list.Set( "ACFRoundTypes", "APHE", DefTable )  --Set the round properties
 list.Set( "ACFIdRounds", DefTable.netid , "APHE" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
 
+ACF.AmmoBlacklist["APHE"] = { "MO", "MG" }
 
 AddCSLuaFile( "ACF/Shared/Rounds/RoundHE.lua" )
 
@@ -117,7 +118,6 @@ function ACF_APHEPropImpact( Index, Bullet, Target, HitNormal, HitPos , Bone ) 	
 end
 
 function ACF_APHEWorldImpact( Index, Bullet, HitPos, HitNormal )
-		
 	local Energy = ACF_Kinetic( Bullet["Flight"]:Length() / ACF.VelScale, Bullet["ProjMass"] - Bullet["FillerMass"], Bullet["LimitVel"] )
 	if ACF_PenetrateGround( Bullet, Energy, HitPos ) then
 		return "Penetrated"
@@ -129,7 +129,7 @@ end
 
 function ACF_APHEEndFlight( Index, Bullet, HitPos, HitNormal )
 	
-	ACF_HE( HitPos , HitNormal , Bullet["FillerMass"] , Bullet["ProjMass"] - Bullet["FillerMass"] , Bullet["Owner"] )
+	ACF_HE( HitPos - Bullet["Flight"] * 0.015 , HitNormal , Bullet["FillerMass"] , Bullet["ProjMass"] - Bullet["FillerMass"] , Bullet["Owner"] )
 	ACF_RemoveBullet( Index )
 	
 end
@@ -137,6 +137,8 @@ end
 --Ammocrate stuff
 function ACF_APHENetworkData( Crate, BulletData )
 
+	Crate:SetNetworkedString("AmmoType","APHE")
+	Crate:SetNetworkedString("AmmoID",BulletData["Id"])
 	Crate:SetNetworkedInt("Caliber",BulletData["Caliber"])	
 	Crate:SetNetworkedInt("ProjMass",BulletData["ProjMass"])
 	Crate:SetNetworkedInt("FillerMass",BulletData["FillerMass"])
@@ -204,7 +206,7 @@ end
 --GUI stuff after this
 function ACF_APHEGUICreate( Panel, Table )
 
-	acfmenupanel:AmmoSelect()
+	acfmenupanel:AmmoSelect( ACF.AmmoBlacklist["APHE"] )
 
 	acfmenupanel:CPanelText("Desc", "")	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "")	--Total round length (Name, Desc)
@@ -257,7 +259,7 @@ function ACF_APHEGUIUpdate( Panel, Table )
 
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData["Type"]]["desc"])	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+Data.Tracer)*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
-	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m\s")	--Proj muzzle velocity (Name, Desc)	
+	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")	--Proj muzzle velocity (Name, Desc)	
 	acfmenupanel:CPanelText("PenetrationDisplay", "Maximum Penetration : "..math.floor(Data.MaxPen).." mm RHA")	--Proj muzzle penetration (Name, Desc)
 	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/1000).." m\n")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\n Average Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \n Average Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)

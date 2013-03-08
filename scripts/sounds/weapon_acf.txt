@@ -4,7 +4,15 @@
 	"volume"			"1.0"
 	"pitch"				"PITCH_NORM"
 	"soundlevel"			"SNDLVL_155DB"
-	"wave"				"^weapons/ACF_Gun/cannon_fire3.wav"
+	"wave"				"^weapons/ACF_Gun/distancecannon.wav"
+}
+"Autoloader.Fire"
+{
+	"channel"			"CHAN_WEAPON"
+	"volume"			"1.0"
+	"pitch"				"PITCH_NORM"
+	"soundlevel"			"SNDLVL_155DB"
+	"wave"				"^weapons/ACF_Gun/autoloader.wav"
 }
 
 "Howitzer.Fire"
@@ -13,7 +21,7 @@
 	"volume"			"1.0"
 	"pitch"				"PITCH_NORM"
 	"soundlevel"			"SNDLVL_155DB"
-	"wave"				"^weapons/ACF_Gun/howitzer_fire3.wav"
+	"wave"				"^weapons/ACF_Gun/distancehowitzer.wav"
 }
 
 "Mortar.Fire"
@@ -21,8 +29,8 @@
 	"channel"			"CHAN_WEAPON"
 	"volume"			"1.0"
 	"pitch"				"PITCH_NORM"
-	"soundlevel"			"SNDLVL_100dB"
-	"wave"				"^weapons/ACF_Gun/mortar_fire1.wav"
+	"soundlevel"			"SNDLVL_155dB"
+	"wave"				"^weapons/ACF_Gun/distancemortar.wav"
 }
 
 "Autocannon.Fire"

@@ -1,4 +1,4 @@
-AddCSLuaFile( "ACF/Shared/Rounds/RoundHP.lua" )
+AddCSLuaFile( "acf/shared/rounds/roundhp.lua" )
 
 local DefTable = {}
 	DefTable.type = "Ammo"										--Tells the spawn menu what entity to spawn
@@ -79,6 +79,9 @@ end
 --Ammocrate stuff
 function ACF_HPNetworkData( Crate, BulletData )
 
+	Crate:SetNetworkedString("AmmoType","HP")
+	Crate:SetNetworkedString("AmmoID",BulletData["Id"])
+	
 	Crate:SetNetworkedInt("Caliber",BulletData["Caliber"])	
 	Crate:SetNetworkedInt("ProjMass",BulletData["ProjMass"])
 	Crate:SetNetworkedInt("PropMass",BulletData["PropMass"])
@@ -160,7 +163,7 @@ function ACF_HPGUIUpdate( Panel, Table )
 
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData["Type"]]["desc"])	--Description (Name, Desc)	
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+Data.Tracer)*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
-	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m\s")	--Proj muzzle velocity (Name, Desc)
+	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("PenetrationDisplay", "Maximum Penetration : "..math.floor(Data.MaxPen).." mm RHA")	--Proj muzzle penetration (Name, Desc)
 	acfmenupanel:CPanelText("KEDisplay", "Kinetic Energy Transfered : "..math.floor(Data.MaxKETransfert).." KJ")			--Proj muzzle KE (Name, Desc)	
 		

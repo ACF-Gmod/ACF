@@ -1,4 +1,4 @@
-AddCSLuaFile( "ACF/Shared/ACFGunList.lua" )
+AddCSLuaFile( "acf/shared/acfgunlist.lua" )
 
 
 -- local Exemple = {}  --That name is just a variable name and doesn't have much meaning
@@ -77,6 +77,8 @@ local HMG20mm = {}
 		HMG20mm.round.id = "20mmHMG"
 		HMG20mm.round.maxlength = 12.5
 		HMG20mm.round.propweight = 0.05
+	HMG20mm.magsize = 50
+	HMG20mm.magreload = 3
 	if ( CLIENT ) then
 		HMG20mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
 		HMG20mm.guiupdate = function() return end
@@ -99,6 +101,8 @@ GunTable["20mmHMG"] = HMG20mm
 		HMG30mm.round.id = "30mmHMG"
 		HMG30mm.round.maxlength = 21.75
 		HMG30mm.round.propweight = 0.13
+	HMG30mm.magsize = 30
+	HMG30mm.magreload = 3
 	if ( CLIENT ) then
 		HMG30mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
 		HMG30mm.guiupdate = function() return end
@@ -120,6 +124,8 @@ local HMG40mm = {}
 		HMG40mm.round.id = "40mmHMG"
 		HMG40mm.round.maxlength = 28
 		HMG40mm.round.propweight = 0.30
+	HMG40mm.magsize = 20
+	HMG40mm.magreload = 3
 	if ( CLIENT ) then
 		HMG40mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
 		HMG40mm.guiupdate = function() return end
@@ -141,6 +147,9 @@ local AC20mm = {}
 		AC20mm.round.id = "20mmAC"
 		AC20mm.round.maxlength = 28
 		AC20mm.round.propweight = 0.12
+	AC20mm.rofmod = 2
+	AC20mm.magsize = 30
+	AC20mm.magreload = 4
 	if ( CLIENT ) then
 		AC20mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
 		AC20mm.guiupdate = function() return end
@@ -162,6 +171,9 @@ local AC30mm = {}
 		AC30mm.round.id = "30mmAC"
 		AC30mm.round.maxlength = 39
 		AC30mm.round.propweight = 0.350
+	AC30mm.rofmod = 1
+	AC30mm.magsize = 20
+	AC30mm.magreload = 3
 	if ( CLIENT ) then
 		AC30mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
 		AC30mm.guiupdate = function() return end
@@ -183,6 +195,9 @@ local AC40mm = {}
 		AC40mm.round.id = "40mmAC"
 		AC40mm.round.maxlength = 45
 		AC40mm.round.propweight = 0.9
+	AC40mm.rofmod = 1
+	AC40mm.magsize = 10
+	AC40mm.magreload = 3
 	if ( CLIENT ) then
 		AC40mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
 		AC40mm.guiupdate = function() return end
@@ -204,6 +219,9 @@ local AC50mm = {}
 		AC50mm.round.id = "50mmAC"
 		AC50mm.round.maxlength = 52
 		AC50mm.round.propweight = 1.2
+	AC50mm.rofmod = 1
+	AC50mm.magsize = 5
+	AC50mm.magreload = 3
 	if ( CLIENT ) then
 		AC50mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
 		AC50mm.guiupdate = function() return end
@@ -225,6 +243,8 @@ local RAC20mm = {}
 		RAC20mm.round.id = "20mmRAC"
 		RAC20mm.round.maxlength = 28
 		RAC20mm.round.propweight = 0.12
+	RAC20mm.magsize = 50
+	RAC20mm.magreload = 8
 	if ( CLIENT ) then
 		RAC20mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
 		RAC20mm.guiupdate = function() return end
@@ -240,18 +260,152 @@ local RAC30mm = {}
 	RAC30mm.model = "models/rotarycannon/rotarycannon_30mm.mdl"
 	RAC30mm.caliber = 3.0
 	RAC30mm.gunclass = "RAC"
-	RAC30mm.weight = 3690
+	RAC30mm.weight = 3680
 	RAC30mm.year = 1975
 		RAC30mm.round = {}
 		RAC30mm.round.id = "30mmRAC"
 		RAC30mm.round.maxlength = 39
 		RAC30mm.round.propweight = 0.350
+	RAC30mm.magsize = 50
+	RAC30mm.magreload = 12
 	if ( CLIENT ) then
 		RAC30mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
 		RAC30mm.guiupdate = function() return end
 	end
 GunTable["30mmRAC"] = RAC30mm
+--Autoloaders
+
+local AL100mm = {}
+	AL100mm.id = "100mmAL"
+	AL100mm.ent = "acf_gun"
+	AL100mm.type = "Guns"
+	AL100mm.name = "100mm Autoloading Cannon"
+	AL100mm.desc = "Fast firing, high velocity gun, however bulky and heavy"
+	AL100mm.model = "models/tankgun/tankgun_al_100mm.mdl"
+	AL100mm.caliber = 10.0
+	AL100mm.gunclass = "AL"
+	AL100mm.weight = 3750
+	AL100mm.year = 1956
+	-- new stuff
+	AL100mm.rofmod = 0.8
+	AL100mm.magsize = 6
+	AL100mm.magreload = 20
+	--
+		AL100mm.round = {}
+		AL100mm.round.id = "100mmAL"
+		AL100mm.round.maxlength = 80
+		AL100mm.round.propweight = 7
+	if ( CLIENT ) then
+		AL100mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
+		AL100mm.guiupdate = function() return end
+	end
+GunTable["100mmAL"] = AL100mm
+
+local AL120mm = {}
+	AL120mm.id = "120mmAL"
+	AL120mm.ent = "acf_gun"
+	AL120mm.type = "Guns"
+	AL120mm.name = "120mm Autoloading Cannon"
+	AL120mm.desc = "Fast firing, high velocity gun, however bulky and heavy"
+	AL120mm.model = "models/tankgun/tankgun_al_120mm.mdl"
+	AL120mm.caliber = 12.0
+	AL120mm.gunclass = "AL"
+	AL120mm.weight = 6200
+	AL120mm.year = 1956
+	-- new stuff
+	AL120mm.rofmod = 0.8
+	AL120mm.magsize = 4
+	AL120mm.magreload = 30
+	--
+		AL120mm.round = {}
+		AL120mm.round.id = "120mmAL"
+		AL120mm.round.maxlength = 102
+		AL120mm.round.propweight = 13
+	if ( CLIENT ) then
+		AL120mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
+		AL120mm.guiupdate = function() return end
+	end
+GunTable["120mmAL"] = AL120mm	
+
+local AL140mm = {}
+	AL140mm.id = "140mmAL"
+	AL140mm.ent = "acf_gun"
+	AL140mm.type = "Guns"
+	AL140mm.name = "140mm Autoloading Cannon"
+	AL140mm.desc = "Fast firing, high velocity gun, however bulky and heavy"
+	AL140mm.model = "models/tankgun/tankgun_al_140mm.mdl"
+	AL140mm.caliber = 14.0
+	AL140mm.gunclass = "AL"
+	AL140mm.weight = 9180
+	AL140mm.year = 1970
+	-- new stuff
+	AL140mm.rofmod = 0.8
+	AL140mm.magsize = 4
+	AL140mm.magreload = 45
+	--
+		AL140mm.round = {}
+		AL140mm.round.id = "140mmAL"
+		AL140mm.round.maxlength = 122
+		AL140mm.round.propweight = 23
+	if ( CLIENT ) then
+		AL140mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
+		AL140mm.guiupdate = function() return end
+	end
+GunTable["140mmAL"] = AL140mm	
+
+local AL75mm = {}
+	AL75mm.id = "75mmAL"
+	AL75mm.ent = "acf_gun"
+	AL75mm.type = "Guns"
+	AL75mm.name = "75mm Autoloading Cannon"
+	AL75mm.desc = "Fast firing, high velocity gun, however bulky and heavy"
+	AL75mm.model = "models/tankgun/tankgun_al_75mm.mdl"
+	AL75mm.caliber = 7.5
+	AL75mm.gunclass = "AL"
+	AL75mm.weight = 2420
+	AL75mm.year = 1946
+	-- new stuff
+	AL75mm.rofmod = 0.8
+	AL75mm.magsize = 6
+	AL75mm.magreload = 15
+	--
+		AL75mm.round = {}
+		AL75mm.round.id = "75mmAL"
+		AL75mm.round.maxlength = 70
+		AL75mm.round.propweight = 4
+	if ( CLIENT ) then
+		AL75mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
+		AL75mm.guiupdate = function() return end
+	end
+GunTable["75mmAL"] = AL75mm
 	
+	local AL50mm = {}
+	AL50mm.id = "50mmAL"
+	AL50mm.ent = "acf_gun"
+	AL50mm.type = "Guns"
+	AL50mm.name = "50mm Autoloading Cannon"
+	AL50mm.desc = "Fast firing, high velocity gun, however bulky and heavy"
+	AL50mm.model = "models/tankgun/tankgun_al_50mm.mdl"
+	AL50mm.caliber = 5.0
+	AL50mm.gunclass = "AL"
+	AL50mm.weight = 1665
+	AL50mm.year = 1966
+	-- new stuff
+	AL50mm.rofmod = 0.8
+	AL50mm.magsize = 8
+	AL50mm.magreload = 10
+	--
+		AL50mm.round = {}
+		AL50mm.round.id = "50mmAL"
+		AL50mm.round.maxlength = 55
+		AL50mm.round.propweight = 1.3
+	if ( CLIENT ) then
+		AL50mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
+		AL50mm.guiupdate = function() return end
+	end
+GunTable["50mmAL"] = AL50mm
+
+
 local Gun50mm = {}
 	Gun50mm.id = "50mmC"
 	Gun50mm.ent = "acf_gun"
@@ -263,6 +417,7 @@ local Gun50mm = {}
 	Gun50mm.gunclass = "C"
 	Gun50mm.weight = 665
 	Gun50mm.year = 1935
+	Gun50mm.sound = "weapons/ACF_Gun/ac_fire4.wav"
 		Gun50mm.round = {}
 		Gun50mm.round.id = "50mmC"
 		Gun50mm.round.maxlength = 55
@@ -524,17 +679,42 @@ local MO200mm = {}
 		MO200mm.guiupdate = function() return end
 	end
 GunTable["200mmM"] = MO200mm
+
+local SL40mm = {}
+	SL40mm.id = "40mmSL"
+	SL40mm.ent = "acf_gun"
+	SL40mm.type = "Guns"
+	SL40mm.name = "40mm Smoke Launcher"
+	SL40mm.desc = "Smoke launcher to block an attacker's line of sight"
+	SL40mm.model = "models/launcher/40mmgl.mdl"
+	SL40mm.caliber = 4.0
+	SL40mm.gunclass = "SL"
+	SL40mm.weight = 55
+	SL40mm.year = 1941
+	SL40mm.round = {}
+	SL40mm.round.id = "40mmSL"
+	SL40mm.round.maxlength = 15
+	SL40mm.round.propweight = 0.00005 
+		
+
+	if ( CLIENT ) then
+		SL40mm.guicreate = (function( Panel, Table ) ACFGunGUICreate( Table ) end or nil)
+		SL40mm.guiupdate = function() return end
+	end
+GunTable["40mmSL"] = SL40mm
 	
 list.Set( "ACFEnts", "Guns", GunTable )
 
 local GunClass = {}	--Start gun classes listing
-
+--sound is used for the loudass sounds, soundDistance uses a script for a distance shot, soundNormal is for machineguns so they're not superloud
 local Machinegun = {}
 	Machinegun.spread = 1
 	Machinegun.name = "Machinegun"
 	Machinegun.muzzleflash = "50cal_muzzleflash_noscale"
 	Machinegun.rofmod = 0.9
-	Machinegun.sound = "weapons/ACF_Gun/mg_fire2.wav"
+	Machinegun.soundNormal = "weapons/ACF_Gun/mg_fire4.wav"
+	Machinegun.sound = " "
+	Machinegun.soundDistance = " "
 GunClass["MG"] = Machinegun	
 	
 local Autocannon = {}
@@ -542,7 +722,10 @@ local Autocannon = {}
 	Autocannon.name = "Autocannon"
 	Autocannon.muzzleflash = "30mm_muzzleflash_noscale"
 	Autocannon.rofmod = 0.35
-	Autocannon.sound = "weapons/ACF_Gun/ac_fire.wav"
+	Autocannon.sound = "weapons/ACF_Gun/ac_fire4.wav"
+	Autocannon.soundDistance = " "
+	Autocannon.soundNormal = " "
+	
 GunClass["AC"] = Autocannon
 
 local HeavyMachinegun = {}
@@ -551,6 +734,8 @@ local HeavyMachinegun = {}
 	HeavyMachinegun.muzzleflash = "50cal_muzzleflash_noscale"
 	HeavyMachinegun.rofmod = 0.30
 	HeavyMachinegun.sound = "weapons/ACF_Gun/mg_fire3.wav"
+	HeavyMachinegun.soundDistance = " "
+	HeavyMachinegun.soundNormal = " "
 GunClass["HMG"] = HeavyMachinegun
 
 local Gatling = {}
@@ -559,30 +744,48 @@ local Gatling = {}
 	Gatling.muzzleflash = "50cal_muzzleflash_noscale"
 	Gatling.rofmod = 0.07
 	Gatling.sound = "weapons/ACF_Gun/rac_fire1.wav"
+	Gatling.soundDistance = " "
+	Gatling.soundNormal = " "
 GunClass["RAC"] = Gatling
 	
 local Cannon = {}
-	Cannon.spread = 1.2
+	Cannon.spread = 0.7
 	Cannon.name = "Cannon"
 	Cannon.muzzleflash = "120mm_muzzleflash_noscale"
 	Cannon.rofmod = 1.5
-	Cannon.sound = "Cannon.Fire"
+	Cannon.sound = "weapons/ACF_Gun/cannon_new.wav"
+	Cannon.soundDistance = "Cannon.Fire"
+	Cannon.soundNormal = " "
 GunClass["C"] = Cannon	
+
+local  Autoloader= {}
+	Autoloader.spread = 0.7
+	Autoloader.name = "Autoloader"
+	Autoloader.muzzleflash = "120mm_muzzleflash_noscale"
+	Autoloader.rofmod = 0.8
+	Autoloader.sound = "weapons/ACF_Gun/autoloader.wav"
+	Autoloader.soundDistance = "Cannon.Fire"
+	Autoloader.soundNormal = " "
+GunClass["AL"] = Autoloader
 	
 local Howitzer = {}
 	Howitzer.spread = 0.5
 	Howitzer.name = "Howitzer"
 	Howitzer.muzzleflash = "120mm_muzzleflash_noscale"
 	Howitzer.rofmod = 1.3
-	Howitzer.sound = "Howitzer.Fire"
+	Howitzer.sound = "weapons/ACF_Gun/howitzer_new2.wav"
+	Howitzer.soundDistance = "Howitzer.Fire"
+	Howitzer.soundNormal = " "
 GunClass["HW"] = Howitzer
 	
 local Mortar = {}
-	Mortar.spread = 8
+	Mortar.spread = 4
 	Mortar.name = "Mortar"
 	Mortar.muzzleflash = "40mm_muzzleflash_noscale"
 	Mortar.rofmod = 3
-	Mortar.sound = "Mortar.Fire"
+	Mortar.sound = "weapons/ACF_Gun/mortar_new.wav"
+	Mortar.soundDistance = "Mortar.Fire"
+	Mortar.soundNormal = " "
 GunClass["MO"] = Mortar	
 
 local GLauncher = {}
@@ -591,7 +794,19 @@ local GLauncher = {}
 	GLauncher.muzzleflash = "40mm_muzzleflash_noscale"
 	GLauncher.rofmod = 1
 	GLauncher.sound = "weapons/grenade_launcher1.wav"
+	GLauncher.soundDistance = " "
+	GLauncher.soundNormal = " "
 GunClass["GL"] = GLauncher	
+
+local SmokeLauncher = {}
+	SmokeLauncher.spread = 2
+	SmokeLauncher.name = "Smoke Launcher"
+	SmokeLauncher.muzzleflash = "40mm_muzzleflash_noscale"
+	SmokeLauncher.rofmod =  60 --60
+	SmokeLauncher.sound = "weapons/ACF_Gun/mortar_new.wav"
+	SmokeLauncher.soundDistance = "Mortar.Fire"
+	SmokeLauncher.soundNormal = " "
+GunClass["SL"] = SmokeLauncher	
 
 list.Set( "ACFClasses", "GunClass", GunClass )	--End gun classes listing
 

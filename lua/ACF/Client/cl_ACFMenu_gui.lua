@@ -1,10 +1,13 @@
+
 function PANEL:Init( )
 
 	acfmenupanel = self.Panel
-		
+	
 	// height
+	
+	
 	self:SetTall( surface.ScreenHeight() - 120 )
-
+	
 	//Weapon Select	
 	
 	self.WeaponSelect = vgui.Create( "DTree", self )
@@ -90,13 +93,42 @@ function PANEL:Init( )
 	local Mobility = self.WeaponSelect:AddNode( "Mobility" )
 	local Engines = Mobility:AddNode( "Engines" )
 	local Gearboxes = Mobility:AddNode( "Gearboxes" )
+	local EngineSubcats = {}
+	for _, MobilityTable in pairs(self.WeaponDisplay["Mobility"]) do
+		NodeAdd = Mobility
+		if( MobilityTable.ent == "acf_engine" ) then
+			NodeAdd = Engines
+		elseif ( MobilityTable.ent == "acf_gearbox" ) then
+			NodeAdd = Gearboxes
+		end
+		if((EngineSubcats["misce"] == nil) and (EngineSubcats["miscg"] == nil)) then
+			EngineSubcats["misce"] = Engines:AddNode( "Miscellaneous" )
+			EngineSubcats["miscg"] = Gearboxes:AddNode( "Miscellaneous" )
+		end
+		if(MobilityTable.category) then
+			if(!EngineSubcats[MobilityTable.category]) then
+				EngineSubcats[MobilityTable.category] = NodeAdd:AddNode( MobilityTable.category )
+			end
+		end
+	end
+	
 	for MobilityID,MobilityTable in pairs(self.WeaponDisplay["Mobility"]) do
 		
 		local NodeAdd = Mobility
 		if MobilityTable.ent == "acf_engine" then
 			NodeAdd = Engines
+			if(MobilityTable.category) then
+				NodeAdd = EngineSubcats[MobilityTable.category]
+			else
+				NodeAdd = EngineSubcats["misce"]
+			end
 		elseif MobilityTable.ent == "acf_gearbox" then
 			NodeAdd = Gearboxes
+			if(MobilityTable.category) then
+				NodeAdd = EngineSubcats[MobilityTable.category]
+			else
+				NodeAdd = EngineSubcats["miscg"]
+			end
 		end
 		
 		local EndNode = NodeAdd:AddNode( MobilityTable.name or "No Name" )
@@ -111,7 +143,20 @@ function PANEL:Init( )
 	
 	
 
-	
+	/*local Missiles = self.WeaponSelect:AddNode( "Missiles" )
+	for MisID, MisTable in pairs(self.WeaponDisplay["Missiles"]) do
+
+		local EndNode = Missiles:AddNode( MisTable.name or "No Name" )
+    
+		EndNode.mytable = MisTable
+		function EndNode:DoClick()
+			RunConsoleCommand( "acfmenu_type", self.mytable.type )
+			acfmenupanel:UpdateDisplay( self.mytable )
+		end
+    
+		EndNode.Icon:SetImage( "gui/silkicons/newspaper")
+    
+	end*/
 	-- local Sensors = self.WeaponSelect:AddNode( "Sensors" )
 	-- for SensorsID,SensorsTable in pairs(self.WeaponDisplay["Sensors"]) do
 		
@@ -186,7 +231,7 @@ function PANEL:PerformLayout()
 	if acfmenupanel.CustomDisplay then
 		--Custom panel
 		acfmenupanel.CustomDisplay:SetPos( 0, ypos )
-		acfmenupanel.CustomDisplay:SetSize( acfmenupanel:GetWide(), acfmenupanel:GetTall() )
+		acfmenupanel.CustomDisplay:SetSize( acfmenupanel:GetWide(), acfmenupanel:GetTall() - acfmenupanel.WeaponSelect:GetTall() - 10 )
 		ypos = acfmenupanel.CustomDisplay.Y + acfmenupanel.CustomDisplay:GetTall() + vspacing
 	end
 	
@@ -195,6 +240,34 @@ end
 function ACFHomeGUICreate( Table )
 
 	if not acfmenupanel.CustomDisplay then return end
+	--start version
+	
+	acfmenupanel["CData"]["VersionInit"] = vgui.Create( "DLabel" )
+	versiontext = "Version\n\n".."SVN Version: "..ACF.CurrentVersion.."\nCurrent Version: "..ACF.Version
+	acfmenupanel["CData"]["VersionInit"]:SetText(versiontext)	
+	acfmenupanel["CData"]["VersionInit"]:SizeToContents()
+	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["VersionInit"] )
+	
+	
+	acfmenupanel["CData"]["VersionText"] = vgui.Create( "DLabel" )
+	
+	local color
+	local versionstring
+	if ACF.Version >= ACF.CurrentVersion then
+		versionstring = "Up To Date"
+		color = Color(0,225,0,255)
+	else
+		versionstring = "Out Of Date"
+		color = Color(225,0,0,255)
+
+	end
+	
+	acfmenupanel["CData"]["VersionText"]:SetText("ACF Is "..versionstring.."!\n\n\n\n")
+	acfmenupanel["CData"]["VersionText"]:SetColor(color) 
+	acfmenupanel["CData"]["VersionText"]:SizeToContents() 
+	
+	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["VersionText"] )
+	-- end version
 	
 	acfmenupanel:CPanelText("Header", "Changelog")
 	
@@ -211,6 +284,7 @@ function ACFHomeGUICreate( Table )
 		
 	end	
 	acfmenupanel.CData.Changelist:SetSize( acfmenupanel.CustomDisplay:GetWide(), 60 )
+	
 	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["Changelist"] )
 	
 	acfmenupanel.CustomDisplay:PerformLayout()
@@ -241,11 +315,12 @@ function ACFChangelogHTTPCallBack(contents , size)
 	acfmenupanel:UpdateDisplay( Table )
 
 end
-http.Get("http://acf.googlecode.com/svn/trunk/changelog.txt", "", ACFChangelogHTTPCallBack) 
+http.Fetch("http://acf.googlecode.com/svn/trunk/changelog.txt", ACFChangelogHTTPCallBack, function() end)
 
-function PANEL:AmmoSelect()
+function PANEL:AmmoSelect( Blacklist )
 	
 	if not acfmenupanel.CustomDisplay then return end
+	if not Blacklist then Blacklist = {} end
 	
 	if not acfmenupanel.AmmoData then
 		acfmenupanel.AmmoData = {}
@@ -255,7 +330,7 @@ function PANEL:AmmoSelect()
 	end
 	
 	--Creating the ammo crate selection
-	acfmenupanel.CData.CrateSelect = vgui.Create( "DMultiChoice", acfmenupanel.CustomDisplay )	--Every display and slider is placed in the Round table so it gets trashed when selecting a new round type
+	acfmenupanel.CData.CrateSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )	--Every display and slider is placed in the Round table so it gets trashed when selecting a new round type
 		acfmenupanel.CData.CrateSelect:SetSize(100, 30)
 		for Key, Value in pairs( acfmenupanel.WeaponDisplay["Ammo"] ) do
 			acfmenupanel.CData.CrateSelect:AddChoice( Value.id , Key )
@@ -268,10 +343,12 @@ function PANEL:AmmoSelect()
 	acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.CrateSelect )
 	
 	--Create the caliber selection display
-	acfmenupanel.CData.CaliberSelect = vgui.Create( "DMultiChoice", acfmenupanel.CustomDisplay )	
+	acfmenupanel.CData.CaliberSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )	
 		acfmenupanel.CData.CaliberSelect:SetSize(100, 30)
 		for Key, Value in pairs( acfmenupanel.WeaponDisplay["Guns"] ) do
-			acfmenupanel.CData.CaliberSelect:AddChoice( Value.id , Key )
+			if( !table.HasValue( Blacklist, Value.gunclass ) ) then
+				acfmenupanel.CData.CaliberSelect:AddChoice( Value.id , Key )
+			end
 		end
 		acfmenupanel.CData.CaliberSelect.OnSelect = function( index , value , data )
 			acfmenupanel.AmmoData["Data"] = acfmenupanel.WeaponData["Guns"][data]["round"]

@@ -156,8 +156,8 @@ function EFFECT:Core()
 			util.Effect( "ACF_Cookoff", Cookoff )
 		end
 	end
-	WorldSound( "ambient/explosions/explode_5.wav", self.Origin , math.Clamp(self.Radius*10,75,165), math.Clamp(300 - self.Radius*12,15,255))
-	WorldSound( "ambient/explosions/explode_4.wav", self.Origin , math.Clamp(self.Radius*10,75,165), math.Clamp(300 - self.Radius*25,15,255))
+	sound.Play( "ambient/explosions/explode_5.wav", self.Origin , math.Clamp(self.Radius*10,75,165), math.Clamp(300 - self.Radius*12,15,255))
+	sound.Play( "ambient/explosions/explode_4.wav", self.Origin , math.Clamp(self.Radius*10,75,165), math.Clamp(300 - self.Radius*25,15,255))
 	
 end
 
@@ -314,7 +314,7 @@ function EFFECT:Airburst( SmokeColor )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Smoke:SetAirResistance( 100 ) 			 
 			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -50 ) ) 			
-			Smoke:SetColor(  SmokeColor.x,SmokeColor.y,SmokeColor.z  )
+			Smoke:SetColor( SmokeColor.x,SmokeColor.y,SmokeColor.z  )
 		end
 	
 	end

@@ -244,6 +244,72 @@
 	"wave"				"^ACF_engines/R7_petrollarge.wav"
 }
 
+// Turbines
+"GT.Small"
+{
+	"channel"			"CHAN_STATIC"
+	"volume"			"1.0"
+	"pitch"				"PITCH_NORM"
+	"soundlevel"			"SNDLVL_100DB"
+	"wave"				"^ACF_engines/turbine_small.wav"
+}
+"GT.Medium"
+{
+	"channel"			"CHAN_STATIC"
+	"volume"			"1.0"
+	"pitch"				"PITCH_NORM"
+	"soundlevel"			"SNDLVL_100DB"
+	"wave"				"^ACF_engines/turbine_medium.wav"
+}
+"GT.Large"
+{
+	"channel"			"CHAN_STATIC"
+	"volume"			"1.0"
+	"pitch"				"PITCH_NORM"
+	"soundlevel"			"SNDLVL_120DB"
+	"wave"				"^ACF_engines/turbine_large.wav"
+}
+
+
+"I4P161.Norm"
+{
+	"channel"			"CHAN_STATIC"
+	"volume"			"1.0"
+	"pitch"				"PITCH_NORM"
+	"soundlevel"			"SNDLVL_100DB"
+	"wave"				"^ACF_engines/i4_petrol16_1.wav"
+}
+
+"I4P162.Norm"
+{
+	"channel"			"CHAN_STATIC"
+	"volume"			"1.0"
+	"pitch"				"PITCH_NORM"
+	"soundlevel"			"SNDLVL_100DB"
+	"wave"				"^ACF_engines/i4_petrol16_2.wav"
+}
+
+"I4P201.Norm"
+{
+	"channel"			"CHAN_STATIC"
+	"volume"			"1.0"
+	"pitch"				"PITCH_NORM"
+	"soundlevel"			"SNDLVL_100DB"
+	"wave"				"^ACF_engines/i4_petrol20_1.wav"
+}
+
+
+"I4P202.Norm"
+{
+	"channel"			"CHAN_STATIC"
+	"volume"			"1.0"
+	"pitch"				"PITCH_NORM"
+	"soundlevel"			"SNDLVL_100DB"
+	"wave"				"^ACF_engines/i4_petrol20_2.wav"
+}
+
+
+
 
 
 

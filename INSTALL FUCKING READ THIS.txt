@@ -1,0 +1,23 @@
+INSTALL:
+
+MAIN GMOD DIRECTORY:
+
+Scripts
+Particles
+
+
+
+-----------------------
+IF YOU WANT ACF POWERED STUFF TO GO MORE REALISTIC SPEEDS:
+
+Put these two lines in your server's SERVER.CFG
+
+
+lua_run local tbl = physenv.GetPerformanceSettings() tbl.MaxAngularVelocity = 30000 physenv.SetPerformanceSettings(tbl)
+
+lua_run local tbl = physenv.GetPerformanceSettings() tbl.MaxVelocity = 20000 physenv.SetPerformanceSettings(tbl)
+
+
+These lines will raise the angular velocity limit (wheels spinning) and forward speed limit
+
+Default gmod settings are crap and your small wheel acf-powered junk will go pretty fucking slow

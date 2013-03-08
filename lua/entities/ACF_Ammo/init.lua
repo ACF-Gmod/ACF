@@ -56,6 +56,9 @@ function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )	--This
 	if self.Exploding or not self.IsExplosive then return HitRes end
 	if HitRes.Kill then
 		self.Exploding = true
+		if( Inflictor and Inflictor:IsValid() and Inflictor:IsPlayer() ) then
+			self.Inflictor = Inflictor
+		end
 		if self.Ammo > 1 then
 			ACF_AmmoExplosion( self.Entity , self.Entity:GetPos() )
 		else
@@ -179,14 +182,12 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	self.BulletData = self:ConvertData( PlayerData )
 		
 	local Size = (self:OBBMaxs() - self:OBBMins())
-	local Efficiency = 0.07			--This is the part of space that's actually useful, the rest is wasted on interround gaps, loading systems ..
+	local Efficiency = 0.11 * ACF.AmmoMod			--This is the part of space that's actually useful, the rest is wasted on interround gaps, loading systems ..
 	self.Volume = math.floor(Size.x * Size.y * Size.z)*Efficiency
 	self.Capacity = math.floor(self.Volume*16.38/self.BulletData["RoundVolume"])
 	
-	self:SetNetworkedString("AmmoID",self.BulletData["Id"])		--Set all the networked variables so the client knows what that crate is shooting.
-	self:SetNetworkedString("AmmoType",self.RoundType)
 	self:SetNetworkedString("Ammo",self.Ammo)
-		
+	
 	self.NetworkData = ACF.RoundTypes[self.RoundType]["network"]
 	self:NetworkData( self.BulletData )
 
@@ -227,7 +228,17 @@ function ENT:Think()
 	self.Entity:GetPhysicsObject():SetMass(self.Mass) 
 	
 	self:SetNetworkedString("Ammo",self.Ammo)
-	self:SetNetworkedVector("TracerColour",self.Entity:GetColor())	
+	
+	local color = self.Entity:GetColor();
+	self:SetNetworkedVector("TracerColour", Vector( color.r, color.g, color.b ) )
+	
+	local cvarGrav = GetConVar("sv_gravity")
+	local vec = Vector(0,0,cvarGrav:GetInt()*-1)
+	if( self.sitp_inspace ) then
+		vec = Vector(0, 0, 0)
+	end
+		
+	self:SetNetworkedVector("Accel", vec)
 		
 	self.Entity:NextThink( CurTime() +  1 )
 	

@@ -43,7 +43,7 @@ function EFFECT:Init( data )
 	else
 		--print("Creating Bullet Effect")
 		local BulletData = {}
-		BulletData.Crate = Entity(data:GetMagnitude())
+		BulletData.Crate = Entity(math.Round(data:GetMagnitude()))
 		BulletData.SimFlight = data:GetStart()*10
 		BulletData.SimPos = data:GetOrigin()
 		BulletData.Caliber = BulletData.Crate:GetNetworkedInt( "Caliber" ) or 10
@@ -55,12 +55,13 @@ function EFFECT:Init( data )
 		
 		if BulletData.Crate:GetNetworkedInt( "Tracer" ) > 0 then
 			BulletData.Tracer = ParticleEmitter( BulletData.SimPos )
-			local r,g,b,a = BulletData.Crate:GetColor()
-			BulletData.TracerColour = Vector(r,g,b)
+			local col = BulletData.Crate:GetColor()
+			BulletData.TracerColour = Vector(col.r,col.g,col.b)
+
 		end
 		
 		
-		BulletData.Accel = Vector(0,0,600*-1)
+		BulletData.Accel = BulletData.Crate:GetNetworkedVector( "Accel" ) or Vector(0,0,600*-1)
 		
 		BulletData.LastThink = CurTime()
 		BulletData.Effect = self.Entity
@@ -132,7 +133,7 @@ function EFFECT:ApplyMovement( Bullet )
 				--Smoke:SetVelocity( Vector(0,0,0) )
 				Smoke:SetColor( 200 , 200 , 200 )
 				Smoke:SetDieTime( 1.2 )
-				Smoke:SetStartAlpha( 60 )
+				Smoke:SetStartAlpha( 10 )
 				Smoke:SetEndAlpha( 0 )
 				Smoke:SetStartSize( 1 )
 				Smoke:SetEndSize( Length/400*Bullet.Caliber )
@@ -180,7 +181,7 @@ function EFFECT:Render()
 	local Bullet = ACF.BulletEffect[self.Index]
 	
 	if (Bullet) then
-		self.Entity:SetModelScale( Vector(Bullet.Caliber/10,Bullet.Caliber/10,Bullet.Caliber/10) )
+		self.Entity:SetModelScale( Bullet.Caliber/10 , 0 )
 		self.Entity:DrawModel()       // Draw the model. 
 	end
 	

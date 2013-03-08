@@ -1,4 +1,4 @@
-AddCSLuaFile( "ACF/Shared/Rounds/RoundHEAT.lua" )
+AddCSLuaFile( "acf/shared/rounds/roundheat.lua" )
 
 local DefTable = {}
 	DefTable.type = "Ammo"										--Tells the spawn menu what entity to spawn
@@ -25,6 +25,8 @@ local DefTable = {}
 
 list.Set( "ACFRoundTypes", "HEAT", DefTable )  --Set the round properties
 list.Set( "ACFIdRounds", DefTable.netid , "HEAT" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+
+ACF.AmmoBlacklist["HEAT"] = { "MG", "HMG", "RAC", "AC" }
 
 function ACF_HEATConvert( Crate, PlayerData )		--Function to convert the player's slider data into the complete round data
 	
@@ -193,7 +195,7 @@ end
 
 function ACF_HEATDetonate( Index, Bullet, HitPos, HitNormal )
 
-	ACF_HE( HitPos , HitNormal , Bullet["FillerMass"]/2 , Bullet["CasingMass"] , Bullet["Owner"] )
+	ACF_HE( HitPos - Bullet["Flight"] * 0.015 , HitNormal , Bullet["FillerMass"]/2 , Bullet["CasingMass"] , Bullet["Owner"] )
 
 	Bullet["Detonated"] = true
 	Bullet["Pos"] = HitPos
@@ -214,6 +216,9 @@ end
 --Ammocrate stuff
 function ACF_HEATNetworkData( Crate, BulletData )
 
+	Crate:SetNetworkedString("AmmoType","HEAT")
+	Crate:SetNetworkedString("AmmoID",BulletData["Id"])
+	
 	Crate:SetNetworkedInt("Caliber",BulletData["Caliber"])	
 	Crate:SetNetworkedInt("ProjMass",BulletData["ProjMass"])
 	Crate:SetNetworkedInt("FillerMass",BulletData["FillerMass"])
@@ -301,7 +306,7 @@ end
 --GUI stuff after this
 function ACF_HEATGUICreate( Panel, Table )
 
-	acfmenupanel:AmmoSelect()
+	acfmenupanel:AmmoSelect( ACF.AmmoBlacklist["HEAT"] )
 	
 	acfmenupanel:CPanelText("Desc", "")	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "")	--Total round length (Name, Desc)
@@ -359,8 +364,8 @@ function ACF_HEATGUIUpdate( Panel, Table )
 
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData["Type"]]["desc"])	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+Data.Tracer)*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
-	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m\s")	--Proj muzzle velocity (Name, Desc)	
-	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/1000).." m\n")	--Proj muzzle velocity (Name, Desc)
+	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")	--Proj muzzle velocity (Name, Desc)	
+	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/1000).." m/n")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\n Average Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \n Average Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)
 
 	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV).." m/s \n Penetrator Maximum Penetration : "..math.floor(Data.MaxPen).." mm RHA\n")	--Proj muzzle penetration (Name, Desc)

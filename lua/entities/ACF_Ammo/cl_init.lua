@@ -15,7 +15,7 @@ function ENT:DoNormalDraw()
 		local txt = self:GetNetworkedString("AmmoID").." : " ..self:GetNetworkedString("Ammo").. "\nRound Type : "..self:GetNetworkedString("AmmoType")..Tracer.."\n"
 		self.AmmoString = ACF.RoundTypes[self:GetNetworkedString("AmmoType")]["cratetxt"]
 		local Ammotxt = self:AmmoString()
-		if (not SinglePlayer()) then
+		if (not game.SinglePlayer()) then
 			local PlayerName = self:GetPlayerName()
 			txt = txt .."".. Ammotxt .. "\n(" .. PlayerName .. ")"
 		end

@@ -173,3 +173,49 @@ Engines :
 --Gearboxes can now link to other gearboxes, passing the power down the line
 --Improved the behavior of the gearboxes at low gear ratios
 --Fixed some weirdness with the torque distribution
+--Added Gear Up / Gear Down inputs and Current Gear output to the Gearbox
+--You can now update the Engines and Gearboxes with other types as long as they share the same model
+*r22
+General :
+
+--New sounds for all the guns except the GL, guns are considerably louder now
+--Added Autoloading cannons, these cannons fire magazines of ammo and then have a lengthy reload time. The new model for this is on the way
+--Autocannons, RACs, and HMGs all now have "magazines", they will fire a burst and then reload
+--Ammo crates will now hold more shells. As a result, your vehicles may be slightly heavier.
+This is in place so vehicles won't be such rolling powderkegs and have more of a chance of a penetration missing the ammunition inside, thus having a longer battle
+
+*r23
+
+Engines :
+--Added V-Twin & Single cylinder engines, models courtesy of Gamerpaddy
+*r24
+
+--ACF update checker by General Wrex
+--Added a various assortment of common tools used with acf in attempt to keep all acf servers equal in terms of building and make it easier to use them (since most of them are on their own SVNs)
+--SERVER OWNERS: Please remove the duplicate tools of the ones included in ACF if you already have them
+*r25
+
+--Added ammunition blacklisting. MGs cannot fire HEAT and such.
+--Added ammo disconnection after the weapon is 512 units away from its ammunition.
+--Added prototype smoke launcher. Fires low velocity ground impact smoke shells to blind the enemy's line of sight. Reloads in 30 sec. The Smoke ammo can ONLY be used with the 40mm SL.
+
+*r26
+--Fixed ammo menus, they have a scrollbar so those with less than X768 can see ammo info.
+--Added Imperial outputs to engines (hp/lb ft)
+--Admiral Wrex made both these awesome changes!
+*r27
+Engines :
+--Added V6, Flat4, 6, and electric motors
+--Retuned and rebalanced every motor, many motors were buffed (see SVN log for full list of changes)
+--Added straight-through gearboxes
+--Fixed flywheels not revving down properly, fixed throttling issues
+--Off throttle volume cut 50%
+--Proper code for electric/turbine torque curves
+--Fucking awesome work by Wrex, Vii, and Gamerpaddy
+
+Misc :
+Nogravving dead props bug fixed
+*r30
+--added working copy of ACF for Gmod 13
+--this is the base of ACF for Gmod 13, not everything works, but its a starting point.
+--applyoffsetforce seems to not be working properly, wheels are still removed because of spazzing.

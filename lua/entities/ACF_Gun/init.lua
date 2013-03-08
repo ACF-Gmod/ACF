@@ -8,6 +8,7 @@ function ENT:Initialize()
 	self.ReloadTime = 1
 	self.Ready = true
 	self.Firing = nil
+	self.Reloading = nil
 	self.NextFire = 0
 	self.LastSend = 0
 	self.Owner = self.Entity
@@ -24,8 +25,8 @@ function ENT:Initialize()
 	
 	self.Inaccuracy 	= 1
 	
-	self.Inputs = Wire_CreateInputs( self.Entity, { "Fire", "Unload" } )
-	self.Outputs = WireLib.CreateSpecialOutputs( self.Entity, { "Ready", "AmmoCount", "Entity" }, { "NORMAL" , "NORMAL" , "ENTITY" } )
+	self.Inputs = Wire_CreateInputs( self.Entity, { "Fire", "Unload", "Reload" } )
+	self.Outputs = WireLib.CreateSpecialOutputs( self.Entity, { "Ready", "AmmoCount", "Entity", "Shots Left" }, { "NORMAL" , "NORMAL" , "ENTITY", "NORMAL" } )
 	Wire_TriggerOutput(self.Entity, "Entity", self.Entity)
 	self.WireDebugName = "ACF Gun"
 
@@ -50,6 +51,23 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun.Model = List["Guns"][Id]["model"]
 	Gun.Mass = List["Guns"][Id]["weight"]
 	Gun.Class = List["Guns"][Id]["gunclass"]
+	-- Custom BS for karbine. Per Gun ROF.
+	Gun.PGRoFmod = 1
+	if(List["Guns"][Id]["rofmod"]) then
+		Gun.PGRoFmod = math.max(0, List["Guns"][Id]["rofmod"])
+	end
+	-- Custom BS for karbine. Magazine Size, Mag reload Time
+	Gun.CurrentShot = 0
+	Gun.MagSize = 1
+	if(List["Guns"][Id]["magsize"]) then
+		Gun.MagSize = math.max(Gun.MagSize, List["Guns"][Id]["magsize"])
+	end
+	Gun.MagReload = 0
+	if(List["Guns"][Id]["magreload"]) then
+		Gun.MagReload = math.max(Gun.MagReload, List["Guns"][Id]["magreload"])
+	end
+	-- self.CurrentShot, self.MagSize, self.MagReload
+	
 	Gun:SetNWString( "Class" , Gun.Class )
 	Gun.Muzzleflash = Classes["GunClass"][Gun.Class]["muzzleflash"]
 	Gun.RoFmod = Classes["GunClass"][Gun.Class]["rofmod"]
@@ -68,7 +86,7 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	local Width = 30
 	local length = 105
 	local Scale = Gun.Caliber/30
-	local VertexFile = file.Read(Gun.Class..".txt")
+	local VertexFile = file.Read(Gun.Class..".txt", "DATA")
 	local PerVertex = string.Explode( "v", VertexFile )
 	local Import = {}
 	for Key, Value in pairs(PerVertex) do
@@ -157,7 +175,7 @@ end
 function ENT:TriggerInput( iname , value )
 
 	if (iname == "Unload" and value > 0) then
-		timer.Simple( 0, self.UnloadAmmo, self )
+		timer.Simple( 0, self.UnloadAmmo() )
 	elseif ( iname == "Fire" and value > 0 ) then
 		if self.Entity.NextFire < CurTime() then
 			self.Entity:FireShell()
@@ -166,8 +184,18 @@ function ENT:TriggerInput( iname , value )
 		self.Firing = true
 	elseif ( iname == "Fire" and value <= 0 ) then
 		self.Firing = false
+	elseif ( iname == "Reload" and value > 0 ) then
+		self.Reloading = true
+	elseif ( iname == "Reload" and value <= 0 ) then
+		self.Reloading = false
 	end		
+end
 
+function RetDist( enta, entb )
+	if not ((enta and enta:IsValid()) or (entb and entb:IsValid())) then return 0 end
+	disp = enta:GetPos() - entb:GetPos()
+	dist = math.sqrt( disp.x * disp.x + disp.y * disp.y + disp.z * disp.z )
+	return dist
 end
 
 function ENT:Think()
@@ -177,10 +205,21 @@ function ENT:Think()
 		local Ammo = 0
 		for Key,AmmoEnt in pairs(self.AmmoLink) do
 			if AmmoEnt and AmmoEnt:IsValid() and AmmoEnt["Load"] then
-				Ammo = Ammo + (AmmoEnt.Ammo or 0)
+				if RetDist( self, AmmoEnt ) < 512 then
+					Ammo = Ammo + (AmmoEnt.Ammo or 0)
+				else
+					self:Unlink( AmmoEnt )
+					soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
+					self:EmitSound(soundstr,500,100)
+				end
 			end
 		end
 		Wire_TriggerOutput(self.Entity, "AmmoCount", Ammo)
+		if( self.MagSize ) then
+			Wire_TriggerOutput(self.Entity, "Shots Left", self.MagSize - self.CurrentShot)
+		else
+			Wire_TriggerOutput(self.Entity, "Shots Left", 1)
+		end
 		
 		self.Entity:SetNetworkedBeamString("GunType",self.Entity.Id)
 		self.Entity:SetNetworkedBeamInt("Ammo",Ammo)
@@ -197,6 +236,8 @@ function ENT:Think()
 		Wire_TriggerOutput(self.Entity, "Ready", 1)
 		if self.Firing then
 			self:FireShell()	
+		elseif self.Reloading then
+			self:ReloadMag()
 		end
 	end
 
@@ -205,10 +246,76 @@ function ENT:Think()
 	
 end
 
-function ENT:FireShell()
+function ENT:CheckWeight()
+	local mass = self.Entity:GetPhysicsObject():GetMass()
+	local maxmass = GetConVarNumber("bnk_maxweight") * 1000 + 999
 	
-	if ( self.Ready and self.Entity:GetPhysicsObject():GetMass() >= self.Mass and not self.Entity:GetParent():IsValid() ) then
+	local chk = false
+	
+	local allents = constraint.GetAllConstrainedEntities( self.Entity )
+	for _, ent in pairs(allents) do
+		if (ent and ent:IsValid() and not ent:IsPlayer() and not (ent == self)) then
+			local phys = ent:GetPhysicsObject()
+			if(phys:IsValid()) then
+				mass = mass + phys:GetMass()
+			end
+		end
+	end
+	
+	if( mass < maxmass ) then
+		chk = true
+	end
+	
+	return chk
+end
+
+function ENT:ReloadMag()
+	if(self.IsUnderWeight == nil) then
+		self.IsUnderWeight = true
+		if(ISBNK) then
+			self.IsUnderWeight = self:CheckWeight()
+		end
+	end
+	if ( (self.CurrentShot > 0) and self.IsUnderWeight and self.Ready and self.Entity:GetPhysicsObject():GetMass() >= self.Mass and not self.Entity:GetParent():IsValid() ) then
 		if ( ACF.RoundTypes[self.BulletData["Type"]] ) then		--Check if the roundtype loaded actually exists
+			self:LoadAmmo(self.MagReload, false)	
+			self:EmitSound("weapons/357/357_reload4.wav",500,100)
+			self.CurrentShot = 0
+			Wire_TriggerOutput(self.Entity, "Ready", 0)
+		else
+			self.CurrentShot = 0
+			self.Ready = false
+			Wire_TriggerOutput(self.Entity, "Ready", 0)
+			self:LoadAmmo(false, true)	
+		end
+	end
+end
+
+function ENT:FireShell()
+	if(self.IsUnderWeight == nil) then
+		self.IsUnderWeight = true
+		if(ISBNK) then
+			self.IsUnderWeight = self:CheckWeight()
+		end
+	end
+	
+	local bool = true
+	if(ISSITP) then
+		if(self.sitp_spacetype != "space" and self.sitp_spacetype != "planet") then
+			bool = false
+		end
+		if(self.sitp_core == false) then
+			bool = false
+		end
+	end
+	if ( bool and self.IsUnderWeight and self.Ready and self.Entity:GetPhysicsObject():GetMass() >= self.Mass and not self.Entity:GetParent():IsValid() ) then
+		Blacklist = {}
+		if not ACF.AmmoBlacklist[self.BulletData["Type"]] then
+			Blacklist = {}
+		else
+			Blacklist = ACF.AmmoBlacklist[self.BulletData["Type"]]	
+		end
+		if ( ACF.RoundTypes[self.BulletData["Type"]] and !table.HasValue( Blacklist, self.Class ) ) then		--Check if the roundtype loaded actually exists
 		
 			local MuzzlePos = self:LocalToWorld(self.Muzzle)
 			local MuzzleVec = self:GetForward()
@@ -229,10 +336,17 @@ function ENT:FireShell()
 			end
 			
 			self.Ready = false
-			self:LoadAmmo(false, false)	
+			self.CurrentShot = math.min(self.CurrentShot + 1, self.MagSize)
+			if((self.CurrentShot >= self.MagSize) and (self.MagSize > 1)) then
+				self:LoadAmmo(self.MagReload, false)	
+				self:EmitSound("weapons/357/357_reload4.wav",500,100)
+				self.CurrentShot = 0
+			else
+				self:LoadAmmo(false, false)	
+			end
 			Wire_TriggerOutput(self.Entity, "Ready", 0)
-
 		else
+			self.CurrentShot = 0
 			self.Ready = false
 			Wire_TriggerOutput(self.Entity, "Ready", 0)
 			self:LoadAmmo(false, true)	
@@ -277,7 +391,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 		self.BulletData = AmmoEnt.BulletData
 		self.BulletData["Crate"] = AmmoEnt:EntIndex()
 		
-		self.ReloadTime = ((self.BulletData["RoundVolume"]/500)^0.60)*self.RoFmod
+		self.ReloadTime = ((self.BulletData["RoundVolume"]/500)^0.60)*self.RoFmod*self.PGRoFmod
 		Wire_TriggerOutput(self.Entity, "Loaded", self.BulletData["Type"])
 		
 		self.NextFire = CurTime() + self.ReloadTime
@@ -325,7 +439,7 @@ function ENT:MuzzleEffect()
 		Effect:SetEntity( self.Entity )
 		Effect:SetScale( self.BulletData["PropMass"] )
 		Effect:SetMagnitude( self.ReloadTime )
-		Effect:SetSurfaceProp( ACF.RoundTypes[self.BulletData["Type"]]["id"]  )	--Encoding the ammo type into a table index
+		Effect:SetSurfaceProp( ACF.RoundTypes[self.BulletData["Type"]]["netid"]  )	--Encoding the ammo type into a table index
 	util.Effect( "ACF_MuzzleFlash", Effect, true, true )
 
 end
@@ -336,7 +450,7 @@ function ENT:ReloadEffect()
 		Effect:SetEntity( self.Entity )
 		Effect:SetScale( 0 )
 		Effect:SetMagnitude( self.ReloadTime )
-		Effect:SetSurfaceProp( ACF.RoundTypes[self.BulletData["Type"]]["id"]  )	--Encoding the ammo type into a table index
+		Effect:SetSurfaceProp( ACF.RoundTypes[self.BulletData["Type"]]["netid"]  )	--Encoding the ammo type into a table index
 	util.Effect( "ACF_MuzzleFlash", Effect, true, true )
 	
 end

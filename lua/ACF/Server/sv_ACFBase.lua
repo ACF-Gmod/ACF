@@ -19,7 +19,7 @@ function ACF_Activate ( Entity , Recalc )
 	Entity.ACF.Health = Health * Percent
 	Entity.ACF.MaxHealth = Health
 	Entity.ACF.Armour = Armour * (0.5 + Percent/2)
-	Entity.ACF.MaxArmour = Armour
+	Entity.ACF.MaxArmour = Armour * ACF.ArmorMod
 	Entity.ACF.Type = nil
 	Entity.ACF.Mass = Entity:GetPhysicsObject():GetMass()
 	Entity.ACF.Density = (Entity:GetPhysicsObject():GetMass()*1000)/Volume
@@ -86,7 +86,27 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle )
 	local Penetration = math.min( MaxPenetration , Armour )			--Clamp penetration to the armour thickness
 	
 	local HitRes = {}
-	HitRes.Damage = (Penetration/Armour)^2 * FrAera	-- This is the volume of the hole caused by our projectile 
+	--BNK Stuff
+	local dmul = 1
+	if (ISBNK) then
+		local cvar = GetConVarNumber("sbox_godmode")
+	
+		if (cvar == 1) then
+			dmul = 0
+		end
+	end
+	--SITP Stuff
+	local var = 1
+	if (ISSITP) then
+		if(!Entity.sitp_spacetype) then
+			Entity.sitp_spacetype = "space"
+		end
+		if(Entity.sitp_spacetype != "space" and Entity.sitp_spacetype != "planet") then
+			var = 0
+		end
+	end
+	
+	HitRes.Damage = var * dmul * (Penetration/Armour)^2 * FrAera	-- This is the volume of the hole caused by our projectile 
 	--print(HitRes.Damage)
 	HitRes.Overkill = (MaxPenetration - Penetration)
 	HitRes.Loss = Penetration/MaxPenetration
@@ -197,8 +217,28 @@ function ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone 
 		Damage = HitRes.Damage*10	
 	
 	end
-		
-	Entity:TakeDamage( Damage , Inflictor )
+	
+	local dmul = 2.5
+	
+	--BNK stuff
+	if (ISBNK) then
+		if(Entity.freq and Inflictor.freq) then
+			if (Entity != Inflictor) and (Entity.freq == Inflictor.freq) then
+				dmul = 0
+			end
+		end
+	end
+	
+	--SITP stuff
+	local var = 1
+	if(!Entity.sitp_spacetype) then
+		Entity.sitp_spacetype = "space"
+	end
+	if(Entity.sitp_spacetype == "homeworld") then
+		var = 0
+	end
+	
+	Entity:TakeDamage( Damage * dmul * var , Inflictor )
 	
 	HitRes.Kill = false
 	--print(Damage)
