@@ -24,6 +24,10 @@ function ACF_RefillConvert( Crate, PlayerData )		--Function to convert the playe
 		BulletData["Caliber"] = ACF.Weapons["Guns"][PlayerData["Id"]]["caliber"]
 		BulletData["ProjMass"] = 0.5*7.9/100 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 		BulletData["PropMass"] = 0.5*ACF.PDensity/1000 --Volume of the case as a cylinder * Powder density converted from g to kg
+		BulletData["FillerMass"] = BulletData["FillerMass"] or 0
+		BulletData["DragCoef"] = BulletData["DragCoef"] or 0
+		BulletData["MuzzleVel"] = BulletData["MuzzleVel"] or 0
+		BulletData["Tracer"] = BulletData["Tracer"] or 0
 		BulletData["RoundVolume"] = 1
 			
 	return BulletData
