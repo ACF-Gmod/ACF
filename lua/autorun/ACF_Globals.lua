@@ -53,10 +53,40 @@ if (SERVER) then
 	include("acf/server/sv_acfdamage.lua")
 	include("acf/server/sv_acfballistics.lua")
 	
+	resource.AddFile( "materials/HUD/killicons/acf_AC.vtf" )
+	resource.AddFile( "materials/HUD/killicons/acf_AC.vmt" )
+	resource.AddFile( "materials/HUD/killicons/acf_AL.vtf" )
+	resource.AddFile( "materials/HUD/killicons/acf_AL.vmt" )
+	resource.AddFile( "materials/HUD/killicons/acf_C.vtf" )
+	resource.AddFile( "materials/HUD/killicons/acf_C.vmt" )
+	resource.AddFile( "materials/HUD/killicons/acf_GL.vtf" )
+	resource.AddFile( "materials/HUD/killicons/acf_GL.vmt" )
+	resource.AddFile( "materials/HUD/killicons/acf_HMG.vtf" )
+	resource.AddFile( "materials/HUD/killicons/acf_HMG.vmt" )
+	resource.AddFile( "materials/HUD/killicons/acf_HW.vtf" )
+	resource.AddFile( "materials/HUD/killicons/acf_HW.vmt" )
+	resource.AddFile( "materials/HUD/killicons/acf_MG.vtf" )
+	resource.AddFile( "materials/HUD/killicons/acf_MG.vmt" )
+	resource.AddFile( "materials/HUD/killicons/acf_MO.vtf" )
+	resource.AddFile( "materials/HUD/killicons/acf_MO.vmt" )
+	resource.AddFile( "materials/HUD/killicons/acf_RAC.vtf" )
+	resource.AddFile( "materials/HUD/killicons/acf_RAC.vmt" )
+
+	
 elseif (CLIENT) then
 
 	include("acf/client/cl_acfballistics.lua")
 	--include("ACF/Client/cl_ACFMenu_GUI.lua")
+	
+	killicon.Add( "acf_AC", "HUD/killicons/acf_AC", Color( 181, 48, 48, 255 ) )
+	killicon.Add( "acf_AL", "HUD/killicons/acf_AL", Color( 181, 48, 48, 255 ) )
+	killicon.Add( "acf_C", "HUD/killicons/acf_C", Color( 181, 48, 48, 255 ) )
+	killicon.Add( "acf_GL", "HUD/killicons/acf_GL", Color( 181, 48, 48, 255 ) )
+	killicon.Add( "acf_HMG", "HUD/killicons/acf_HMG", Color( 181, 48, 48, 255 ) )
+	killicon.Add( "acf_HW", "HUD/killicons/acf_HW", Color( 181, 48, 48, 255 ) )
+	killicon.Add( "acf_MG", "HUD/killicons/acf_MG", Color( 181, 48, 48, 255 ) )
+	killicon.Add( "acf_MO", "HUD/killicons/acf_MO", Color( 181, 48, 48, 255 ) )
+	killicon.Add( "acf_RAC", "HUD/killicons/acf_RAC", Color( 181, 48, 48, 255 ) )
 	
 end
 
@@ -168,10 +198,56 @@ function ACF_UpdateChecking( )
 end
 ACF_UpdateChecking( )
 
+if SERVER then
+	duplicator.RegisterEntityModifier( "acf_diffsound", function( ply , Entity , data)
+		if !IsValid( Entity ) then return end
+		local sound = data[1]
+		timer.Simple(1, function()
+			if Entity:GetClass() == "acf_engine" then
+				Entity.SoundPath = sound
+			elseif Entity:GetClass() == "acf_gun" then
+				Entity.Sound = sound
+			end
+		end)
+		
+		duplicator.StoreEntityModifier( Entity, "acf_diffsound", {sound} )
+	end)
+end
 
+concommand.Add("acf_replacesound", function(ply, _, args)
+	if CLIENT then return end
+	local sound
+	if type(args) == "table" then 
+		sound = args[1]
+	else
+		sound = args
+	end
+	
+	if not sound then return end
+	
+	if not file.Find("sounds"..sound, "GAME") then
+		print("sounds/"..sound.."*")
+		print("There is no such sound!")
+		return
+	end
+	
+	local tr = ply:GetEyeTrace()
+	if not tr.Entity or (tr.Entity:GetClass() ~= "acf_gun" and tr.Entity:GetClass() ~= "acf_engine") then
+		print("You need to look at engine or gun to change it's sound")
+		return
+	end
+	local ent = tr.Entity
+	if ent:GetClass() == "acf_engine" then
+		ent.SoundPath = sound
+	elseif ent:GetClass() == "acf_gun" then
+		ent.Sound = sound
+		ent:SetNWString( "Sound", sound )
+	end
+	duplicator.StoreEntityModifier( ent , "acf_diffsound", {sound} )
+end)
 
 function ACF_ChatVersionPrint(ply)
-	if ACF.Version < ACF.CurrentVersion then
+	if not ACF.Version or ACF.Version < ACF.CurrentVersion then
 	timer.Simple( 2,function()
 		ply:SendLua(
 			"chat.AddText(Color(255,0,0),\"A newer version of ACF is available! Version: \"..ACF.CurrentVersion)"
@@ -182,8 +258,76 @@ end
 
 hook.Add("PlayerInitialSpawn","versioncheck",ACF_ChatVersionPrint)
 
-
 cvars.AddChangeCallback("acf_healthmod", ACF_CVarChangeCallback)
 cvars.AddChangeCallback("acf_armormod", ACF_CVarChangeCallback)
 cvars.AddChangeCallback("acf_ammomod", ACF_CVarChangeCallback)
 cvars.AddChangeCallback("acf_spalling", ACF_CVarChangeCallback)
+
+/*
+ONE HUGE HACK to get good killicons.
+*/
+
+if SERVER then
+	util.AddNetworkString( "ACF_KilledByACF" )
+	
+	hook.Add("PlayerDeath", "ACF_PlayerDeath",function( victim, inflictor, attacker )
+		if victim.KilledByAmmo then
+			net.Start("ACF_KilledByACF")
+				net.WriteString( victim:Nick()..";ammo;"..attacker:Nick() )
+			net.Broadcast()
+		elseif inflictor:GetClass() == "acf_gun" then
+			net.Start("ACF_KilledByACF")
+				net.WriteString( victim:Nick()..";"..inflictor.Class..";"..attacker:Nick() )
+			net.Broadcast()
+		end
+	end)
+end
+
+
+if CLIENT then
+	
+	net.Receive("ACF_KilledByACF", function()
+		local Table = string.Explode(";", net.ReadString())
+		local victim, gun, attacker = Table[1], Table[2], Table[3]
+		
+		if attacker == "worldspawn" then attacker = "" end
+		GAMEMODE:AddDeathNotice( attacker, -1, "acf_"..gun, victim, 1001 )
+	end)
+	
+	timer.Create("ACF_replacePlayerKilled", 1, 0, function()
+		local Hooks = usermessage.GetTable()
+		if Hooks["PlayerKilled"] then
+			local ACF_PlayerKilled = Hooks["PlayerKilled"].Function
+			Hooks["PlayerKilled"].Function = function(msg)
+				local victim     = msg:ReadEntity()
+				if ( !IsValid( victim ) ) then return end
+				local inflictor    = msg:ReadString()
+				local attacker     = msg:ReadString()
+				if inflictor != "acf_gun" then
+					ACF_PlayerKilled(msg)
+				end
+			end
+			timer.Destroy("ACF_replacePlayerKilled")
+			Msg("Replaced PlayerKilled\n")
+		end
+	end)
+	timer.Create("ACF_replacePlayerKilledByPlayer", 1, 0, function()
+		local Hooks = usermessage.GetTable()
+		if Hooks["PlayerKilledByPlayer"] then
+			local ACF_PlayerKilledByPlayer = Hooks["PlayerKilledByPlayer"].Function
+			Hooks["PlayerKilledByPlayer"].Function = function(msg)
+				local victim     = msg:ReadEntity()
+				local inflictor    = msg:ReadString()
+				local attacker     = msg:ReadEntity()
+
+				if ( !IsValid( attacker ) ) then return end
+				if ( !IsValid( victim ) ) then return end
+				if inflictor != "acf_gun" then
+					ACF_PlayerKilledByPlayer(msg)
+				end
+			end
+			timer.Destroy("ACF_replacePlayerKilledByPlayer")
+			Msg("Replaced PlayerKilledByPlayer\n")
+		end
+	end)
+end

@@ -12,6 +12,8 @@ function ENT:Initialize()
 	self.Damaged = false
 	self.CanUpdate = true
 	self.Load = false
+	self.EmptyMass = 0
+	self.Ammo = 0
 	
 	self.Master = {}
 	self.Sequence = 0

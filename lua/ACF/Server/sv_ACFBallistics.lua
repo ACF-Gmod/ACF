@@ -68,6 +68,33 @@ end
 
 function ACF_DoBulletsFlight( Index, Bullet )
 
+	if ACF.safezone then
+		if Bullet.NextPos:WithinAABox( ACF.safezone[1], ACF.safezone[2] ) then
+			ACF_RemoveBullet( Index )			
+			return
+		end
+	end
+	
+	if Bullet.SkyLvL then
+		if (CurTime() - Bullet.LifeTime) > 500 then			 -- We don't want to calculate bullets that will never come back to map.
+			ACF_RemoveBullet( Index )
+			return
+		end
+		
+		if Bullet.NextPos.z > Bullet.SkyLvL then 
+			Bullet.Pos = Bullet.NextPos
+			return
+		elseif not util.IsInWorld(Bullet.NextPos) then
+			ACF_RemoveBullet( Index )
+			return
+		else
+			Bullet.SkyLvL = nil
+			Bullet.LifeTime = nil
+			Bullet.Pos = Bullet.NextPos
+			return
+		end
+	end
+
 	local FlightTr = { }
 		FlightTr.start = Bullet.StartTrace
 		FlightTr.endpos = Bullet.NextPos
@@ -89,7 +116,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 			ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
 			ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )	
 		end
-	elseif FlightRes.HitWorld then									--If we hit the world then try to see if it's thin enough to penetrate
+	elseif FlightRes.HitWorld and not FlightRes.HitSky then									--If we hit the world then try to see if it's thin enough to penetrate
 		ACF_BulletWorldImpact = ACF.RoundTypes[Bullet.Type]["worldimpact"]
 		local Retry = ACF_BulletWorldImpact( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )
 		if Retry == "Penetrated" then 								--if it is, we soldier on	
@@ -99,6 +126,14 @@ function ACF_DoBulletsFlight( Index, Bullet )
 			ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
 			ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
 			ACF_BulletEndFlight( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )	
+		end
+	elseif FlightRes.HitSky then
+		if FlightRes.HitNormal == Vector(0,0,-1) then
+			Bullet.SkyLvL = FlightRes.HitPos.z 						-- Lets save height on which bullet went through skybox. So it will start tracing after falling bellow this level. This will prevent from hitting higher levels of map
+			Bullet.LifeTime = CurTime()
+			Bullet.Pos = Bullet.NextPos
+		else 
+			ACF_RemoveBullet( Index )
 		end
 	else															--If we didn't hit anything, move the shell and schedule next think
 		Bullet.Pos = Bullet.NextPos

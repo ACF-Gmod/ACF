@@ -55,7 +55,12 @@ function EFFECT:Init( data )
 		
 		if BulletData.Crate:GetNetworkedInt( "Tracer" ) > 0 then
 			BulletData.Tracer = ParticleEmitter( BulletData.SimPos )
-			local col = BulletData.Crate:GetColor()
+			local veccol
+			if BulletData.Crate:GetNetworkedVector( "Color" ) then
+				local vec = BulletData.Crate:GetNetworkedVector( "Color" )
+				veccol = Color( vec.x, vec.y, vec.z, 255 )
+			end
+			local col = veccol or Crate:GetColor()
 			BulletData.TracerColour = Vector(col.r,col.g,col.b)
 
 		end

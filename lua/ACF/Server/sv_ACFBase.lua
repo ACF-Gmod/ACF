@@ -54,11 +54,19 @@ function ACF_Check ( Entity )
 	
 end
 
-function ACF_Damage ( Entity , Energy , FrAera , Angle , Inflictor , Bone ) 
+function ACF_Damage ( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun, Ammo ) 
+	
+	if ACF.safezone then
+		if Entity:GetPos():WithinAABox( ACF.safezone[1], ACF.safezone[2] ) then
+			ACF_RemoveBullet( Index )			
+			return
+		end
+	end
 	
 	local Activated = ACF_Check( Entity )
 	
 	if Entity.SpecialDamage then
+		print("Entity.SpecialDamage")
 		return Entity:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone )
 	elseif Activated == "Prop" then	
 		
@@ -66,11 +74,11 @@ function ACF_Damage ( Entity , Energy , FrAera , Angle , Inflictor , Bone )
 		
 	elseif Activated == "Vehicle" then
 	
-		return ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone )
+		return ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun, Ammo )
 		
 	elseif Activated == "Squishy" then
 	
-		return ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone )
+		return ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun, Ammo )
 		
 	end
 	
@@ -130,13 +138,20 @@ function ACF_PropDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone )
 	
 end
 
-function ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone )
+function ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun, Ammo )
 
 	local HitRes = ACF_CalcDamage( Entity , Energy , FrAera , Angle )
 	
 	local Driver = Entity:GetDriver()
 	if Driver:IsValid() then
-		Driver:TakeDamage( HitRes.Damage*40 , Inflictor )
+		if Ammo == true then
+			Entity.KilledByAmmo = true
+		end
+		Driver:TakeDamage( HitRes.Damage*40, Gun, Inflictor )
+		if Ammo == true then
+			Entity.KilledByAmmo = false
+		end
+		
 	end
 
 	HitRes.Kill = false
@@ -150,7 +165,7 @@ function ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone 
 	return HitRes
 end
 
-function ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone )
+function ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun, Ammo )
 	
 	local Size = Entity:BoundingRadius()
 	local Mass = Entity:GetPhysicsObject():GetMass()
@@ -238,7 +253,13 @@ function ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone 
 		var = 0
 	end
 	
-	Entity:TakeDamage( Damage * dmul * var , Inflictor )
+	if Ammo == true then
+		Entity.KilledByAmmo = true
+	end
+	Entity:TakeDamage( Damage * dmul * var, Inflictor, Gun )
+	if Ammo == true then
+		Entity.KilledByAmmo = false
+	end
 	
 	HitRes.Kill = false
 	--print(Damage)
