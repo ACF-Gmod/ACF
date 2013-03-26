@@ -72,6 +72,7 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun.Muzzleflash = Classes["GunClass"][Gun.Class]["muzzleflash"]
 	Gun.RoFmod = Classes["GunClass"][Gun.Class]["rofmod"]
 	Gun.Sound = Classes["GunClass"][Gun.Class]["sound"]
+	Gun:SetNWString( "Sound", Gun.Sound )
 	Gun.Inaccuracy = Classes["GunClass"][Gun.Class]["spread"]
 	Gun:SetModel( Gun.Model )	
 	
@@ -172,12 +173,30 @@ function ENT:Unlink( Target )
 	
 end
 
-function ENT:TriggerInput( iname , value )
+function ENT:GetUser( inp )
+	if inp:GetClass() == "gmod_wire_adv_pod" then
+	elseif inp:GetClass() == "gmod_wire_expression2" then
+		if inp.Inputs["Fire"] then
+			return self:GetUser(inp.Inputs["Fire"].Src) 
+		elseif inp.Inputs["Shoot"] then
+			return self:GetUser(inp.Inputs["Shoot"].Src) 
+		else
+			return inp.Owner or inp:GetOwner()
+		end
+	else
+		return inp.Owner or inp:GetOwner()
+	end
+	
+end
 
+function ENT:TriggerInput( iname , value )
+	
 	if (iname == "Unload" and value > 0) then
 		timer.Simple( 0, self.UnloadAmmo() )
 	elseif ( iname == "Fire" and value > 0 ) then
 		if self.Entity.NextFire < CurTime() then
+			self.User = self:GetUser(self.Inputs["Fire"].Src)
+			if not IsValid(self.User) then self.User = self.Owner end
 			self.Entity:FireShell()
 			self.Entity:Think()
 		end
@@ -325,7 +344,7 @@ function ENT:FireShell()
 			
 			self.BulletData["Pos"] = MuzzlePos
 			self.BulletData["Flight"] = (MuzzleVec+Inaccuracy):GetNormalized() * self.BulletData["MuzzleVel"] * 39.37 + self:GetVelocity()
-			self.BulletData["Owner"] = self.Owner
+			self.BulletData["Owner"] = self.User
 			self.BulletData["Gun"] = self.Entity
 			self.CreateShell = ACF.RoundTypes[self.BulletData["Type"]]["create"]
 			self:CreateShell( self.BulletData )
