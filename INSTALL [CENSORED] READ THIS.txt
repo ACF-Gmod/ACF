@@ -20,4 +20,4 @@ lua_run local tbl = physenv.GetPerformanceSettings() tbl.MaxVelocity = 20000 phy
 
 These lines will raise the angular velocity limit (wheels spinning) and forward speed limit
 
-Default gmod settings are crap and your small wheel acf-powered junk will go pretty fucking slow
+Default gmod settings are [BLEEP] and your small wheel acf-powered junk will go pretty [BLEEP] slow
