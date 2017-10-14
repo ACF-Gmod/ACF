@@ -1,8 +1,0 @@
-Effect names:
-
-50cal_muzzleflash_noscale
-30mm_muzzleflash_noscale
-40mm_muzzleflash_noscale
-120mm_muzzleflash_noscale
-155mm_muzzleflash_noscale
-6pder_muzzleflash_noscale

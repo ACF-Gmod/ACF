@@ -1,221 +1,175 @@
-r01
-Guns : 
-
---The guns "Ammo" input now only affects the next round to be loaded, the current round stays in the gun unless specifically unloaded or fired
-
---Added "Unload" wire input the guns, will cause them to send the round currently loaded back to the crate it came from and load a round from the currently selected crate
-
---Fixed the animation issues when linking an empty gun to a crate
-
---Fixed the sound issues with the cannons
-
-Menu : 
-
---Added a changelog
-
---Fixed aspect ratio issues with the menu 3D display
-
---Added proper descriptions to the Engines and Gearboxes
-
-*r02
-Engines :
-
---Changed the existing engines to diesels, with corresponding sound
-
---Slightly upped the weight of both the 1.2l-i4 and 2l-i4
-
---Changes to the ideal RPM range of both the 1.2l-i4 and 2l-i4 : 
-     12l : From 8000-10000RPM to 2000-4000RPM
-     2l : From 5000-7000RPM to 1800-3500RPM
-	 
---Increased the max torque of the 2l-i4 from 150n/m to 200n/m
-
---Lowered the max torque of the 15l-i4 from 5000n/m to 1800n/m
-
-*r03
-Guns : 
-
---Reduced HE explosive power 25%
-
---Reduced mortar accuracy by half, and increased reload time by 50%
-
-Engines : 
-
---Fixed a bug that made the engines apply twice as much power as their rated output to the wheels
-
-*r04
-Engines : 
-
---Added Dual-Clutch gearboxes, that will allow you to use tank-like steering with only one gearbox
-
-*r05
-Engines : 
-
---Added V8 lineup
---Increased engine volume
-
-*r06
-Engines : 
--- Tuned the suck out of the 6.5L V8
-
-Gearboxes :
--- Added 6 speed lineup
-
-*r07
-Engines : 
--- Added 3.5 & 8.7L diesel v8s, be sure to update your client
-
-*r07
-Engines : 
--- Removed 3.5, 6.5, and 8.7L engines in favor of 9L petrol v8, inline 4/6 on their way to fill the gaps
-
-*r08
-Guns : 
--- Added all new sounds for guns, soundscripting for them as well so they are audible at range
-Engines:
--- Added soundscripts and changed engine sounds accordingly
-
-*r09
-Guns : 
--- HE occlusion issues are now fixed
-
-*r10
-Guns :
---Ammocrate armour is now calculated differently, only takeing the weight of the empty crate, without the ammo, into account.
-
---Ammo detonations occur differently, they are now based on the damage dealed to the crate compared to the size of the rounds in that crate. This makes it more difficult to detonate big rounds with MGs or rounds that just barely penetrated armour
-
-Interface :
---Changelog now appears upon selection of the ACF Menu
-
---Changelog revisions are now properly sorted
-
-*r11
-Gearboxes : 
--- Added 4 & 6 speed inline gearboxes
-
-*r12
-Guns : 
---IMPORTANT : Removed Ammo input on guns, replacing it is the Active input on crates. The gun will load rounds from any crate marked as Active, cycling them in the order they were linked in if more than one is Active. At least one crate has to be Active for the gun to be able to load ammo
-
---Added an AmmoCount output to the guns, showing the ammo count of all the crates currently Active
-
---Guns won't try to load from empty crates if any Active and linked crate still has ammo
-
-*r13
-Engines :
--- Added petrol Inline 4 series
-
-*r14
-Engines :
---Added Diesel & Petrol I6 series
-
---Retuned 9L v8; less torque, marginally more horsepower, and lighter in mass
-
-*r15
-Engines :
---Added Diesel v8 line, tweaked 20L to have a bit more torque and less horsepower, fixed some weights.
-
---Added new 6.5L diesel 6 sound.
-
-*r16
-Guns : 
---Added a further penalty to damage for projectiles that have insignificant penetration compared to the armour it is hitting, to prevent the sandpaper effect
-
---HP is now calculated from surface aera, as to less favor large, blocky props
-
---Explosion damage on heavily armoured props is now much more dependent on fragmentation effects than on pure blast
-
---APHE loses penetration more quickly when HE content is added
-
---HEAT now correctly loses HE filler based on the cone volume
-
---HEAT penetration efficiency is slightly higher
-
---Fixed and issue with explosion damage and large, lightweight props
-
---Fixed a bug with ricochets where the bullets would continue flight from the wrong position
-
---Unlinking gearboxes from wheels doesn't cause duplication issues anymore
-
-Engines : 
-
---Dual-clutch gearboxes now have their full rated torque per clutch, but will slip if more than the rating of a single clutch is applied to the whole gearbox
-
-*r17
-Gearboxes :
---Added line of 1 speed, heavy duty gearboxes aimed at aircraft and marine uses
-
-*r18
-Guns :
--- Added Heavy Machinegun series, this encompasses 20, 30, and 40mm MGs; they are light and fast firing, but suffer in accuracy and ballistic performance, as they are meant for aircraft
-
--- Changed the 12.7 and 14.5 to have lower rates of fire and are more accurate, as well as a new sound
-
-Engines :
---Balanced a lot of the petrol engines to be more stark from the diesels (diesels trade power for torque, and vice versa)
-
-*r19
-Guns : 
---Fixed a crash if an ammocrate was spawned but couldn't containt at least one round of ammo
-
---Fixed a bug that caused HEAT slugs to have an insanely high chance to ricochet
-*r20
-Engines : 
---Added lineup of Radials. No diesel ones, as they're not needed.
---Improved 9.2 V12's performance.
-
-*21
-Guns : 
---Added proper HitBox support when firing at players and NPCs.
-
-Engines : 
---Gearboxes can now link to other gearboxes, passing the power down the line
---Improved the behavior of the gearboxes at low gear ratios
---Fixed some weirdness with the torque distribution
---Added Gear Up / Gear Down inputs and Current Gear output to the Gearbox
---You can now update the Engines and Gearboxes with other types as long as they share the same model
-*r22
-General :
-
---New sounds for all the guns except the GL, guns are considerably louder now
---Added Autoloading cannons, these cannons fire magazines of ammo and then have a lengthy reload time. The new model for this is on the way
---Autocannons, RACs, and HMGs all now have "magazines", they will fire a burst and then reload
---Ammo crates will now hold more shells. As a result, your vehicles may be slightly heavier.
-This is in place so vehicles won't be such rolling powderkegs and have more of a chance of a penetration missing the ammunition inside, thus having a longer battle
-
-*r23
-
-Engines :
---Added V-Twin & Single cylinder engines, models courtesy of Gamerpaddy
-*r24
-
---ACF update checker by General Wrex
---Added a various assortment of common tools used with acf in attempt to keep all acf servers equal in terms of building and make it easier to use them (since most of them are on their own SVNs)
---SERVER OWNERS: Please remove the duplicate tools of the ones included in ACF if you already have them
-*r25
-
---Added ammunition blacklisting. MGs cannot fire HEAT and such.
---Added ammo disconnection after the weapon is 512 units away from its ammunition.
---Added prototype smoke launcher. Fires low velocity ground impact smoke shells to blind the enemy's line of sight. Reloads in 30 sec. The Smoke ammo can ONLY be used with the 40mm SL.
-
-*r26
---Fixed ammo menus, they have a scrollbar so those with less than X768 can see ammo info.
---Added Imperial outputs to engines (hp/lb ft)
---Admiral Wrex made both these awesome changes!
-*r27
-Engines :
---Added V6, Flat4, 6, and electric motors
---Retuned and rebalanced every motor, many motors were buffed (see SVN log for full list of changes)
---Added straight-through gearboxes
---Fixed flywheels not revving down properly, fixed throttling issues
---Off throttle volume cut 50%
---Proper code for electric/turbine torque curves
---Fucking awesome work by Wrex, Vii, and Gamerpaddy
-
-Misc :
-Nogravving dead props bug fixed
-*r30
---added working copy of ACF for Gmod 13
---this is the base of ACF for Gmod 13, not everything works, but its a starting point.
---applyoffsetforce seems to not be working properly, wheels are still removed because of spazzing.
+r500
+--For an extended version history, please visit the github changelog.  https://github.com/nrlulz/ACF/commits/master
+
+*r555
+-Added ground gas turbines
+-Added automatic transmissions
+-Added 76mm SA
+-Added client convar ACF_MobilityRopeLinks, setting 0 will skip rope creation on your links
+-Added ACF E2/SF/EA2 function "entity:acfHitClip( vector hitpos )"; returns 1 if hitpos is on clipped part of entity
+-Added ACF E2/SF/EA2 function "acfHoldGear" and "acfShiftPointScale" for automatic gearboxes
+-Added a hook for ACF_KEShove
+-Added legality checks for SOLID_NONE on ACF entities
+-Added Sestze's MASK_SHOT passthrough (lets 30mm and under pass through things like chain-link fences)
+-Added power to weight ratio output for armor properties tool reload function
+-Added a few small optimizations and behind the scenes improvements
+-Updated readme with install instructions, and a mention of Knight Icy's weapon sound pack
+-Updated ACF Sound Tool to support a future update to ACF Missiles
+-Updated engine stats for electrics and turbines to show the true powerband
+-Fixed operation order error on visclip passthrough
+-Fixed engines ocassionally refusing to use fuel
+-Fixed lua error when trying to create ammo for nonexistent weapon types
+-Fixed possible lua error on KE shove
+-Reduced volume of ammo refill
+-Reduced FL minimum spread from 1.0 to 0.25
+-Damaged gearboxes lose efficiency
+-More relaxed weldparenting rules on mobility (allows parenting chains, requires weld to last [physical] parent)
+-Allowed diffs, double diffs, transfer cases, and clutches to be parented without welds
+-Buffed smoke radius 25%
+-Buffed smoke filler deploy rate, WP filler lifetime
+-Buffed petrol health
+-Buffed electric health massively
+-Nerfed aero turbine throttle response
+-Nerfed transaxial aero turbines to 80% of inline equivalent
+-Nerfed large aero turbine power 8.5%, weight 10%
+-Buffed small inline aero turbine power 15%
+-Buffed med inline aero turbine power 10%
+-Buffed small and med electric power 20%
+-Buffed large electric power 40%
+-Nerfed 0.9L I2 and 1.0L I4 special weight by 15kg
+-Slight nerf to 5.2L V6
+-Slight buff to 7.8L V8
+
+*r558
+-Updated SF functions to new standard, courtesy of EpicG
+-Fixed armor tool reload not working at all
+-Hopefully fixed armor tool reload sometimes not getting entire contraption
+-Fixed transaxial GG turbines
+-Fixed issues with auto gearbox UI
+-Fixed too many digits on auto gearbox overlay
+-Fixed issue with double shifting on gearup/geardown inputs
+
+*r560
+-github pls
+
+*r561
+-Fixed change in r555 that broke missiles
+
+*r562
+-Fixed change in r555 that broke standalone clutch
+-Clamped added time from round extraction to half of load time, when unloading gun
+
+*r563
+-Made it easier for plugins to modify crate text.
+
+*r564
+-Fixed sound tool shoot effect.
+-Added extension support to sound tool.
+-Added error notifications to sound tool.
+
+*r565
+-Fixed sbox_acf_restrictinfo support with EA2 component.
+
+*r569
+-Make acf_bulleteffect use SetEntity() instead of SetMagnitude()
+
+*r573
+-Minor optimization of fuel tanks, ammo crates, gearboxes, and engines
+-Minor optimization of ballistics courtesy of Red
+-Removed ACFs SetParent override, no longer needed
+-Fixed gearboxes not working after updating settings
+-Fixed auto-gearbox shift point generator UI
+-Increased random dispersion of ground ricochets
+-Fixed prop ricochet angles, added some random dispersion
+-Partial fix for hitting yourself when firing at high speed
+-Partial fix for bullets ghosting through props
+-Improved ballistics backtracing, increased backtrace length
+-Fix for the ocassional bullet exploding when reentering world courtesy of red
+-Added a few bugfixes courtesy of Steve
+--Fixed issue with world penetration not properly reducing KE
+--Fixed bullets getting culled early near source map limits
+--Fixed issue with parented guns failing to give bullets inherited velocity
+-Made muzzleflash smoke and missile smoke less blinding
+-Fuel tank capacity calculation improved, better representation of model
+--Capacity increased ~50%, but still 1/8th realistic for balance
+--Refuel rate doubled
+-Added e2 function acfDragDriv()
+-Reverted to old dragdiv 40, increasing ballistic drag
+--Minimal effect on cannons, reduces effective range of light weapons like MG
+-clamped short round firerate bonus to 19%
+-Smoke rounds updated
+--Added timed fuse to smoke ammo (min 0.5s), set to 0 to disable timed fuse
+--Allowed M and HW to fire smoke rounds
+--Smoke effect can handle up to 10,000g WP and 10,000g SM filler (up from 200g)
+--WP duration reduced 27% (from 29 seconds to 21 seconds for full length 40mm SL WP)
+--Added relevant info to ammocrate overlay
+-Increased max guns to 16 to help offset racks/flares using gun limit
+-Added rate of fire and magazine info to guns on acf menu tool
+-Reduced 40mm SL weight from 25 kg to 5 kg
+-Increased 40mm GL reload from 2.5s to 7.5s
+-Increased 37mm C round length from 45 cm to 48 cm
+-Adjusted MGs
+--7.62mm RoF increased from 477 to 600 r/m
+--7.62mm given 250 round magazine with 6 second reload
+--12.7mm RoF increased from 460 to 600 r/m
+--12.7mm given 150 round magazine with 6 second reload
+--14.5mm RoF increased from 346 to 480 r/m
+--14.5mm given 90 round magazine with 5 second reload
+--20mm given 50 round magazine with 4 second reload
+-Adjusted HMGs courtesy of Red
+--Spread increased from 0.32 to 0.4
+--20mm 160kg, RoF 675 r/m, 12 rounds, 8s reload, 40mm pen @ 850 m/s
+--30mm 480kg, RoF 434 r/m, 10 rounds, 10s reload, 56mm pen @ 850 m/s
+--40mm 740kg, RoF 380 r/m, 8 rounds, 13s reload, 69mm pen @ 850 m/s
+-Adjusted SAs
+--Increased SA spread from 0.08 to 0.12
+--Decreased 25mm RoF from 214 to 180 r/m
+--Increased 37mm weight from 480 kg to 540 kg
+--Decreased 37mm round length from 45 cm to 42 cm
+--Decreased 76mm round length from 75 cm to 70 cm
+--Decreased 76mm weight from 3200 kg to 2990 kg
+-Buffed ALs
+--75mm weight reduced from 2125 kg to 1892 kg
+--100mm RoF increased from 18.8 to 22 r/m
+--100mm weight reduced from 3750 kg to 3325 kg
+--120mm RoF increased from 13.6 to 18 r/m
+--120mm weight reduced from 6200 kg to 5850 kg
+--120mm magazine increased from 4 to 5
+--140mm RoF increased from 10.4 to 14 r/m
+--140mm weight reduced from 9180 kg to 8830 kg
+--140mm magazine increased from 4 to 5
+-New RAC models courtesy of Kickasskyle
+-Buffed RACs
+--Reduced spread from 0.48 to 0.44
+--20mm 974kg, 1200 r/m, 48 rounds, 10s reload
+--30mm 1863kg, 1400 r/m, 60 rounds, 8s reload
+-[KNOWN ISSUE] Bullets sometimes ghosting through fast oncoming props
+--I'm attempting to fix this, but is proving elusive. However, should be somewhat less common now.
+-[KNOWN ISSUE] WP filler does not work with missiles
+--Missiles will no longer be able to fire smoke in a future missiles update
+
+*r574
+-Fixed fuel capacity being lower than original
+--Capacity multiplier is now half of realistic
+-Updated RAC textures
+-Updated ACF logo courtesy of SeikiMatt
+
+*r575
+-Fixed issue with tracers appearing to start behind weapon
+-Possible fix for FL HE-effect bug
+
+*r577
+-Filtered out certain map entities from ACF ballistics
+-Fixed issue with how ACF handles clips on some props
+-Added periodically forced mass updates to ammo and fuel
+-Added e2 function acfEffectiveArmor(Armor, Angle) which returns the effective armor of a given nominal armor and angle
+-Added e2 function ranger:acfEffectiveArmor() which returns the effective armor from a trace hitting an entity
+
+*r579
+-Forgot a thing last update (fixed e2 clip checks)
+
+*r584
+-Included two community fixes, dealing with bullet-related errors and undo-queue trouble.  Thanks to vMajx and thegrb93 for their help.
+
+*r588
+-Included new acfGetTorqueWithFuel and acfGetPowerWthFuel e2 functions, thanks to haaax2000 for the help.

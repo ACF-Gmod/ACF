@@ -69,10 +69,10 @@ function SWEP:Think()
 				self.LastSend = CurTime() + 1
 				local Valid = ACF_Check( ent )
 				if Valid then
-					self.Weapon:SetNetworkedInt( "HP", ent.ACF.Health )
-					self.Weapon:SetNetworkedInt( "Armour", ent.ACF.Armour )
-					self.Weapon:SetNetworkedInt( "MaxHP", ent.ACF.MaxHealth )
-					self.Weapon:SetNetworkedInt( "MaxArmour", ent.ACF.MaxArmour )
+					self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
+					self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
+					self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
+					self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
 				end
 			end
 		end
@@ -106,10 +106,10 @@ function SWEP:PrimaryAttack()
 			PlayerHealth = PlayerHealth + 1 --otherwise add 1 HP
 			ent:SetHealth( PlayerHealth ) --and boost the player's HP to that.
 			
-			self.Weapon:SetNetworkedInt( "HP", PlayerHealth ) --Output to the HUD bar
-			self.Weapon:SetNetworkedInt( "Armour", PlayerArmour )
-			self.Weapon:SetNetworkedInt( "MaxHP", PlayerMaxHealth )
-			self.Weapon:SetNetworkedInt( "MaxArmour", PlayerMaxArmour )
+			self.Weapon:SetNWFloat( "HP", PlayerHealth ) --Output to the HUD bar
+			self.Weapon:SetNWFloat( "Armour", PlayerArmour )
+			self.Weapon:SetNWFloat( "MaxHP", PlayerMaxHealth )
+			self.Weapon:SetNWFloat( "MaxArmour", PlayerMaxArmour )
 			
 			local effect = EffectData()--then make some pretty effects :D ("Fixed that up a bit so it looks like it's actually emanating from the healing player, well mostly" Kaf)
 			local AngPos = userid:GetAttachment( 4 )
@@ -119,6 +119,7 @@ function SWEP:PrimaryAttack()
 			util.Effect( "thruster_ring", effect, true, true ) --("The 2 booleans control clientside override, by default it doesn't display it since it'll lag a bit behind inputs in MP, same for sounds" Kaf)
 			ent:EmitSound( "items/medshot4.wav", true, true )--and play a sound.
 		else
+			if CPPI and not ent:CPPICanTool( self.Owner, "torch" ) then return false end
 			local Valid = ACF_Check ( ent )
 			if ( Valid and ent.ACF.Health < ent.ACF.MaxHealth ) then
 				ent.ACF.Health = math.min(ent.ACF.Health + (30/ent.ACF.MaxArmour),ent.ACF.MaxHealth)
@@ -126,16 +127,16 @@ function SWEP:PrimaryAttack()
 				ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", true, true )--Welding noise here, gotte figure out how to do a looped sound.
 				TeslaSpark(tr.HitPos , 1 )
 			end
-			self.Weapon:SetNetworkedInt( "HP", ent.ACF.Health )
-			self.Weapon:SetNetworkedInt( "Armour", ent.ACF.Armour )
-			self.Weapon:SetNetworkedInt( "MaxHP", ent.ACF.MaxHealth )
-			self.Weapon:SetNetworkedInt( "MaxArmour", ent.ACF.MaxArmour )
+			self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
+			self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
+			self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
+			self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
 		end
 	else 
-		self.Weapon:SetNetworkedInt( "HP", 0 )
-		self.Weapon:SetNetworkedInt( "Armour", 0 )
-		self.Weapon:SetNetworkedInt( "MaxHP", 0 )
-		self.Weapon:SetNetworkedInt( "MaxArmour", 0 )
+		self.Weapon:SetNWFloat( "HP", 0 )
+		self.Weapon:SetNWFloat( "Armour", 0 )
+		self.Weapon:SetNWFloat( "MaxHP", 0 )
+		self.Weapon:SetNWFloat( "MaxArmour", 0 )
 	end
 
 end
@@ -156,14 +157,15 @@ self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
 	if ent:IsValid() then
 		local Valid = ACF_Check ( ent )
 		if Valid then
-			self.Weapon:SetNetworkedInt( "HP", ent.ACF.Health )
-			self.Weapon:SetNetworkedInt( "Armour", ent.ACF.Armour )
-			self.Weapon:SetNetworkedInt( "MaxHP", ent.ACF.MaxHealth )
-			self.Weapon:SetNetworkedInt( "MaxArmour", ent.ACF.MaxArmour )
+			self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
+			self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
+			self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
+			self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
 			local HitRes = {}
 			if(ent:IsPlayer()) then
 				HitRes = ACF_Damage ( ent , {Kinetic = 0.05,Momentum = 0,Penetration = 0.05} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
 			else
+				if CPPI and not ent:CPPICanTool( self.Owner, "torch" ) then return false end
 				HitRes = ACF_Damage ( ent , {Kinetic = 5,Momentum = 0,Penetration = 5} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
 			end
 			if HitRes.Kill then
@@ -184,10 +186,10 @@ self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
 				ent:EmitSound( "weapons/physcannon/superphys_small_zap" ..tostring( math.random( 1, 4 ) ).. ".wav", true , true ) --old annoyinly loud sounds
 			end
 		else 
-			self.Weapon:SetNetworkedInt( "HP", 0 )
-			self.Weapon:SetNetworkedInt( "Armour", 0 )
-			self.Weapon:SetNetworkedInt( "MaxHP", 0 )
-			self.Weapon:SetNetworkedInt( "MaxArmour", 0 )
+			self.Weapon:SetNWFloat( "HP", 0 )
+			self.Weapon:SetNWFloat( "Armour", 0 )
+			self.Weapon:SetNWFloat( "MaxHP", 0 )
+			self.Weapon:SetNWFloat( "MaxArmour", 0 )
 		end
 
 	end
