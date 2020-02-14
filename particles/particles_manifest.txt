@@ -1,6 +1,0 @@
-particles_manifest
-{
-	"file"		"particles/rocket_motor.pcf"
-	"file"		"particles/acf_muzzleflashes.pcf"
-
-}

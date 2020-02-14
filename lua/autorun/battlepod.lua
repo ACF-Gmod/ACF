@@ -1,9 +1,5 @@
-local function HandleACFSeatAnimation( vehicle, player )
-	return player:SelectWeightedSequence( ACT_GMOD_SIT_ROLLERCOASTER ) 
-end
-
 local function HandleACFPodAnimation( vehicle, player )
-	return player:SelectWeightedSequence( ACT_GMOD_SIT_ROLLERCOASTER ) 
+	return player:LookupSequence("drive_pd")
 end
 
 local Category = "Armoured Combat Framework"
@@ -40,8 +36,5 @@ local V = {
 					vehiclescript	=	"scripts/vehicles/prisoner_pod.txt",
 					limitview		=	"0"
 				},
-	Members = {
-					HandleAnimation = HandleACFSeatAnimation
-				}
 }
 list.Set( "Vehicles", "acf_pilotseat", V )

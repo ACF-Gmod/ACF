@@ -13,6 +13,7 @@
 	"$phongfresnelranges" "[1 1 1]"
 	"$phongexponent" "10"
 	"$model" 1
+	"$blendtintbybasealpha" "1"
 }
 
 

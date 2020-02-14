@@ -10,10 +10,10 @@ local tex = surface.GetTextureID( "models/props_combine/combine_interface_disp" 
 
 function SWEP:ViewModelDrawn()
 
-	local Health = math.floor((self.Weapon:GetNetworkedBool("HP")or 0) *10)/10 
-	local MaxHealth = math.floor((self.Weapon:GetNetworkedBool("MaxHP")or 0) * 10)/10
-	local Armour = math.floor((self.Weapon:GetNetworkedBool("Armour")or 0) *100)/100
-	local MaxArmour = math.floor((self.Weapon:GetNetworkedBool("MaxArmour")or 0) *100)/100
+	local Health = math.floor(self.Weapon:GetNWFloat("HP", 0) *10)/10 
+	local MaxHealth = math.floor(self.Weapon:GetNWFloat("MaxHP", 0) * 10)/10
+	local Armour = math.floor(self.Weapon:GetNWFloat("Armour", 0) *100)/100
+	local MaxArmour = math.floor(self.Weapon:GetNWFloat("MaxArmour", 0) *100)/100
 	
 	local HealthTxt = Health.."/"..MaxHealth.."\n"
 	local ArmourTxt = Armour.."/"..MaxArmour.."\n"
